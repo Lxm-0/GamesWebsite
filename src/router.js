@@ -13,8 +13,11 @@ export function openGame(gameName) {
         case "interactive dragon":
             path = "public/DragonSlider/interactive dragon.html";
             break;
-        case "memory":
-            path = "public/memory.html";
+        case "pacman":
+            path = "public/pacmanmaster/pacman.html";
+            break;
+        case "Fighting game":
+            path = "public/fightinggame/fightingGame.html";
             break;
         default:
             path = "public/Games.html";
