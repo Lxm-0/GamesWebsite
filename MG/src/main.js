@@ -68,6 +68,11 @@ window.loadPage = function (page) {
                 if (mainFrame) {
                     mainFrame.style.display = 'block';
                 }
+                try {
+                    mainFrame.contentWindow.dispatchEvent(new Event('resize'));
+                } catch (e) {
+                    console.log("Cross-origin prevented manual resize trigger, but local files should be fine.");
+                }
             }, 500);
         };
 
