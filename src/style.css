@@ -168,11 +168,48 @@
 .hamburger-btn.active .hamburger-line:nth-child(3) {
   transform: rotate(-15deg) translate(7px, -5px);
 }
+
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 5px 12px;
+  margin: 0 10px;
+  flex-grow: 1;
+  max-width: 350px;
+  border: 1px solid var(--primary-color);
+  direction: rtl;
+  position: absolute;
+  left: 82%;
+  transform: translateX(-50%);
+}
+
+.search-container input {
+  flex: 1; 
+  border: none;
+  background: none;
+  outline: none;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.search-icon {
+  color: var(--primary-color);
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 5px; /* مسافة بسيطة من حافة الإطار اليسرى */
+  order: 2; /* يضمن بقاءها في الطرف */
+}
 @media (max-width: 768px) {
   .nav-links {
     display: none;
   }
-
+  .search-container {
+    display: none; /* أو يمكنك تركه يظهر بشكل أصغر */
+  }
   .navbar {
     justify-content: space-between;
     padding: 0.7rem 1rem;
