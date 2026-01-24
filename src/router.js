@@ -29,7 +29,7 @@ export function openGame(gameName) {
             path = "public/play/fishgame.html";
             break;
              case "PatientSymptom":
-            path = "public/play/PatientSymptom/PatientSymptom.html";
+            path = "public/PatientSymptom/PatientSymptom.html";
             break;
         default:
             path = "public/Games.html";
