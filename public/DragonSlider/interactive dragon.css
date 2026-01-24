@@ -6,7 +6,6 @@ html {
 	width: 100vw;
 	height: 600px;
 	overflow: hidden;
-	background: rgb(60, 97, 153);
 	touch-action: none;
 }
 

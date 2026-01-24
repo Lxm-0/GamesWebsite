@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -96,37 +96,57 @@
       </div>
 
       <div class="game-card">
-        <img
-          src="../public/Dragon.png"
-          alt="interactive dragon"
-        />
+        <img src="../public/Dragon.png" alt="interactive dragon" />
         <h3>دراجون سلايدر</h3>
-        <p>
-          لعبه لتطبيق مفهوم الاحداث في جافا سكريبت
-        </p>
+        <p>لعبه لتطبيق مفهوم الاحداث في جافا سكريبت</p>
         <button id="btnDragon">العب</button>
       </div>
 
       <div class="game-card">
         <img
-          src="https://via.placeholder.com/300x200/2196F3/FFFFFF?text=Memory"
-          alt="Memory Game"
+          src="pacman.png"
+          alt="Pac Man Master"
         />
-        <h3>ذاكرة</h3>
-        <p>اختبر ذاكرتك في هذه اللعبة الكلاسيكية. ابحث عن الصور المتطابقة.</p>
-        <button id="btnMemory">العب</button>
+        <h3>باك مان</h3>
+        <p>
+          ساعد باك مان في أكل النقاط والهروب من الأشباح في المتاهة الكلاسيكية!
+        </p>
+        <button id="btnpacman">العب</button>
       </div>
 
       <div class="game-card">
         <img
-          src="https://via.placeholder.com/300x200/FF9800/FFFFFF?text=Card"
-          alt="Card Game"
+          src="samurai.png"
+          alt="Samurai fight"
         />
-        <h3>ورق</h3>
+        <h3>قتال ساموراي</h3>
+   <p>
+    انغمس في عالم القوة! اختبر مهاراتك في القتال السريع، واجه خصومك بسيوف الكاتانا، وكن الساموراي الأخير الصامد.
+  </p>
+        <button id="btnfighting">العب</button>
+      </div>
+
+            <div class="game-card">
+        <img
+          src="towerdefens.png"
+          alt="Tower Defense"
+        />
+        <h3>الدفاع عن القلعه</h3>
+  <p>
+    لعبة استراتيجية مثيرة! ابنِ أبراجك الدفاعية، خطط لمسار أعدائك، واحمِ قلعتك من الهجمات المتتالية.
+  </p>
+        <button id="btntower">العب</button>
+      </div>
+       <div class="game-card">
+        <img
+          src="sunnyland.png"
+          alt="Samurai fight"
+        />
+        <h3>ماريو</h3>
         <p>
-          لعبة ورق تقليدية. قارن أوراقك وتحدى خصومك في هذه اللعبة الاستراتيجية.
-        </p>
-        <button id="btnCard">العب</button>
+    انطلق في مغامرة كلاسيكية! اقفز فوق العقبات، اجمع الكنوز، واستكشف العوالم الملونة في هذه اللعبة الممتعة.
+    </p>
+        <button id="btnsouunyland">العب</button>
       </div>
     </div>
 
@@ -138,7 +158,7 @@
       console.log("Parent:", window.parent);
       console.log(
         "Parent loadPage exists:",
-        window.parent && window.parent.loadPage
+        window.parent && window.parent.loadPage,
       );
 
       // Add event listeners when page loads
@@ -147,11 +167,13 @@
 
         const btnPlatform = document.getElementById("btnPlatform");
         const btnmetrodivaniaMaster = document.getElementById(
-          "btnmetrodivaniaMaster"
+          "btnmetrodivaniaMaster",
         );
         const btnPuzzle = document.getElementById("btnDragon");
-        const btnMemory = document.getElementById("btnMemory");
-        const btnCard = document.getElementById("btnCard");
+        const btnPacman = document.getElementById("btnpacman");
+        const btnfighting = document.getElementById("btnfighting");
+        const btntower = document.getElementById("btntower");
+        const btnsouny = document.getElementById("btnsouunyland");
 
         if (btnPlatform) {
           btnPlatform.addEventListener("click", () => {
@@ -161,7 +183,7 @@
         }
         if (btnmetrodivaniaMaster) {
           btnmetrodivaniaMaster.addEventListener("click", () => {
-            console.log("Platform button clicked");
+            console.log("metrodivaniaMaster button clicked");
             openGame("metrodivaniaMaster");
           });
         }
@@ -173,17 +195,29 @@
           });
         }
 
-        if (btnMemory) {
-          btnMemory.addEventListener("click", () => {
-            console.log("Memory button clicked");
-            openGame("memory");
+        if (btnPacman) {
+          btnPacman.addEventListener("click", () => {
+            console.log("btnpacman button clicked");
+            openGame("pacman");
           });
         }
 
-        if (btnCard) {
-          btnCard.addEventListener("click", () => {
+        if (btnfighting) {
+          btnfighting.addEventListener("click", () => {
             console.log("Card button clicked");
-            alert("هذه اللعبة قيد التطوير");
+            openGame("Fighting game");
+          });
+        }
+        if (btntower) {
+          btntower.addEventListener("click", () => {
+            console.log("Card button clicked");
+            openGame("tower defense");
+          });
+        }
+           if (btnsouny) {
+          btnsouny.addEventListener("click", () => {
+            console.log("Card button clicked");
+            openGame("sounnyland");
           });
         }
 
@@ -193,7 +227,7 @@
             console.log("Saving state to parent");
             window.parent.localStorage.setItem(
               "currentPage",
-              "public/Games.html"
+              "public/Games.html",
             );
             window.parent.localStorage.setItem("welcomeHidden", "true");
           }

@@ -21,32 +21,42 @@
 .navbar {
   background: rgba(254, 254, 254, 0.733);
   padding: 0.5rem 1rem;
-  margin: 0.5rem auto 0 auto;
+  margin: 0.5rem auto;
   border-radius: 20px;
   max-width: 90%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start; 
   align-items: center;
+  gap: 5px; /* قللنا الفجوة هنا من 15 إلى 5 */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+#profile {
+  margin-left: auto; /* هذا السحر الذي سيدفع الصورة لآخر اليمين */
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-color);
 }
 .logo {
   display: flex;
   align-items: center;
   text-decoration: none;
+  margin-left: 0; /* تأكد أن اللوجو لا يدفع نفسه لليسار */
+}
+
+.logo-icon {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-left: 5px; /* قللنا الهامش من 0.9rem */
 }
 
 .logo-text {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--primary-color);
-  margin-left: 0.7rem;
-  margin-right: 0.7rem;
-}
-
-.logo-icon {
-  font-size: 2rem;
-  color: var(--primary-color);
-  margin-left: 0.9rem;
+  margin-left: 5px; /* قللنا الهامش من 0.7rem */
+  margin-right: 10px;
 }
 .Games-text {
   padding: 0 5%;
@@ -56,9 +66,9 @@
   color: #ffffff;
 }
 .nav-links {
+  margin-left: auto; /* يدفع الروابط لجهة اليمين */
   display: flex;
   list-style: none;
-  margin-right: 1.5rem;
 }
 
 .nav-links li {
@@ -87,13 +97,13 @@
   left: 0;
   background-color: var(--primary-color);
   transition: none 0.9s;
- 
 }
-
 
 /* Hamburger Menu Styles */
 .hamburger-menu {
   position: relative;
+  margin-right: -3.8rem;
+  margin-top: -0.4rem;
 }
 
 .hamburger-btn {
@@ -104,7 +114,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-right: 2rem;
 }
 
 .hamburger-line {
@@ -112,7 +121,6 @@
   height: 3px;
   background-color: var(--primary-color);
   transition: 0.3s;
-  margin-left: 2rem;
 }
 
 .menu-items {
@@ -160,11 +168,48 @@
 .hamburger-btn.active .hamburger-line:nth-child(3) {
   transform: rotate(-15deg) translate(7px, -5px);
 }
+
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 5px 12px;
+  margin: 0 10px;
+  flex-grow: 1;
+  max-width: 350px;
+  border: 1px solid var(--primary-color);
+  direction: rtl;
+  position: absolute;
+  left: 82%;
+  transform: translateX(-50%);
+}
+
+.search-container input {
+  flex: 1; 
+  border: none;
+  background: none;
+  outline: none;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.search-icon {
+  color: var(--primary-color);
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 5px; /* مسافة بسيطة من حافة الإطار اليسرى */
+  order: 2; /* يضمن بقاءها في الطرف */
+}
 @media (max-width: 768px) {
   .nav-links {
     display: none;
   }
-
+  .search-container {
+    display: none; /* أو يمكنك تركه يظهر بشكل أصغر */
+  }
   .navbar {
     justify-content: space-between;
     padding: 0.7rem 1rem;
@@ -176,48 +221,22 @@
   .hamburger-btn {
     margin-right: 1rem;
   }
+  .menu-items {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  min-width: 100px;
+  padding: 10px 0;
+  list-style: none;
+  margin: 0;
+  z-index: 100;
+}
 }
 
-/* games page style*/
-.games-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-  padding: 20px;
-  margin-top: 2rem;
-}
-
-.game-card {
-  background: rgba(254, 254, 254, 0.733);
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  text-align: center;
-  transition: 0.3s;
-}
-
-.game-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-}
-
-.game-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 12px;
-}
-
-.game-card h3 {
-  margin-top: 15px;
-  font-size: 1.2rem;
-}
-
-.game-card p {
-  color: #444;
-  margin-top: 5px;
-  font-size: 0.95rem;
-}
 button {
   padding: 10px 20px;
   border: none;
@@ -240,7 +259,7 @@ button {
 
 /* شاشات صغيرة جدًا – لعبة واحدة بالصف */
 @media (max-width: 500px) {
-  body{
+  body {
     height: 100vh;
   }
   .games-container {
@@ -303,12 +322,11 @@ button {
   background-color: #238bad;
 }
 @media (max-width: 768px) {
-
   .Welcoming-container {
     max-width: 60%;
     height: 45vh;
-    margin-bottom:70%;
-    margin-top:30%;
+    margin-bottom: 70%;
+    margin-top: 30%;
   }
   .Welcoming-container div p {
     font-size: 1.2rem;
@@ -320,5 +338,3 @@ button {
     transform: translateY(0);
   }
 }
-
-
