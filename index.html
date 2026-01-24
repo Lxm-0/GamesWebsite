@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Malak Games</title>
+    <title>The Games</title>
     <link rel="stylesheet" href="src/style.css" />
     <link rel="stylesheet" href="src/SpinEffect.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -22,7 +22,18 @@
     </style>
   </head>
   <body>
+ <!-- The Header -->
     <nav class="navbar">
+        <a href="#" class="logo">
+        <span class="logo-text">The<span class="Games-text">Games</span> </span>
+        <span class="logo-icon">✦</span>
+      </a>
+      <ul class="nav-links">
+        <li ><a href="#">Home</a></li>
+        <li ><a href="#">Games</a></li>
+        <li><a href="#">Team</a></li>
+        <li><a href="#">about</a></li>
+      </ul>
       <div class="hamburger-menu">
         <button class="hamburger-btn" id="hamburgerBtn">
           <span class="hamburger-line"></span>
@@ -31,20 +42,12 @@
         </button>
 
         <ul class="menu-items" id="menuItems">
-          <li><a href="#">About</a></li>
-          <li><a href="#">Pricing</a></li>
-          <li><a href="#" id="register">Logout</a></li>
+          <li ><a href="#">Home</a></li>
+        <li ><a href="#">Games</a></li>
+        <li><a href="#">Team</a></li>
+        <li><a href="#">about</a></li>
         </ul>
       </div>
-      <a href="#" class="logo">
-        <span class="logo-text">M<span class="Games-text">Games</span> </span>
-        <span class="logo-icon">✦</span>
-      </a>
-      <div class="search-container">
-        <input type="text" id="gameSearch" placeholder="ابحث عن لعبة..." />
-        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-      </div>
-      <img id="profile" src="public/sunnyland.png" alt="" />
     </nav>
 
     <div class="loader" id="pageloader">
