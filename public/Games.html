@@ -148,6 +148,18 @@
     </p>
         <button id="btnsouunyland">العب</button>
       </div>
+ <div class="game-card">
+        <img src="image.png" style="width: 100%;height: 200px;object-fit: cover;" alt="fish Game" />
+        <h3>لعبة الاسماك</h3>
+        <p>
+          استمتع بمغامرة تحت البحار،تحكم بالسمكه 
+          وتجنب الإصطدام بالعقبات  لجمع اكبر قدر من النقاط
+        </p>
+        <button id="btnfishgame">العب</button>
+      </div>
+
+          </div>
+     
     </div>
 
     <script type="module">
@@ -174,6 +186,7 @@
         const btnfighting = document.getElementById("btnfighting");
         const btntower = document.getElementById("btntower");
         const btnsouny = document.getElementById("btnsouunyland");
+        const btnfish = document.getElementById("btnfishgame");
 
         if (btnPlatform) {
           btnPlatform.addEventListener("click", () => {
@@ -220,7 +233,12 @@
             openGame("sounnyland");
           });
         }
-
+    if (btnfish) {
+          btnfish.addEventListener("click", () => {
+            console.log("Card button clicked");
+            openGame("fishgame");
+          });
+        }
         // Save state to parent
         try {
           if (window.parent) {

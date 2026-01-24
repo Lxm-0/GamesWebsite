@@ -25,6 +25,9 @@ export function openGame(gameName) {
             case "sounnyland":
             path = "public/sunnylandplatformermain/sounnyland.html";
             break;
+             case "fishgame":
+            path = "public/play/fishgame.html";
+            break;
         default:
             path = "public/Games.html";
 

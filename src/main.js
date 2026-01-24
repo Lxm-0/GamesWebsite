@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const welcomeHidden = localStorage.getItem("welcomeHidden");
 
         console.log("Saved state:", { savedPage, welcomeHidden });
-
+const isInIframe=false;
         if (!isInIframe && savedPage && welcomeHidden === "true") {
             loadPage(savedPage);
         } else {
