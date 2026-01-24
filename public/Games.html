@@ -157,7 +157,14 @@
         </p>
         <button id="btnfishgame">العب</button>
       </div>
-
+<div class="game-card">
+        <img src="" style="width: 100%;height: 200px;object-fit: cover;" alt="fish Game" />
+        <h3> PatientSymptom لعبة</h3>
+        <p>
+لعبة محاكاة غرفة الطوارى لاستقبال الحالات المرضية المفاجئة
+        </p>
+        <button id="btnPatientSymptom">العب</button>
+      </div>
           </div>
      
     </div>
@@ -187,6 +194,7 @@
         const btntower = document.getElementById("btntower");
         const btnsouny = document.getElementById("btnsouunyland");
         const btnfish = document.getElementById("btnfishgame");
+        const btnPatientSymptom = document.getElementById("btnPatientSymptom");
 
         if (btnPlatform) {
           btnPlatform.addEventListener("click", () => {
@@ -237,6 +245,12 @@
           btnfish.addEventListener("click", () => {
             console.log("Card button clicked");
             openGame("fishgame");
+          });
+        }
+         if (btnPatientSymptom) {
+          btnPatientSymptom.addEventListener("click", () => {
+            console.log("Card button clicked");
+            openGame("PatientSymptom");
           });
         }
         // Save state to parent
