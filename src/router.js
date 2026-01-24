@@ -19,8 +19,15 @@ export function openGame(gameName) {
         case "Fighting game":
             path = "public/fightinggame/fightingGame.html";
             break;
+        case "tower defense":
+            path = "public/towerdefensemain/towerdefense.html";
+            break;
+            case "sounnyland":
+            path = "public/sunnylandplatformermain/sounnyland.html";
+            break;
         default:
             path = "public/Games.html";
+
     }
 
     console.log("Path determined:", path);

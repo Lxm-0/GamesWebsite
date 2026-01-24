@@ -125,6 +125,29 @@
         </p>
         <button id="btnfighting">العب</button>
       </div>
+
+            <div class="game-card">
+        <img
+          src="towerdefens.png"
+          alt="Tower Defense"
+        />
+        <h3>الدفاع عن القلعه</h3>
+        <p>
+          لعبة ورق تقليدية. قارن أوراقك وتحدى خصومك في هذه اللعبة الاستراتيجية.
+        </p>
+        <button id="btntower">العب</button>
+      </div>
+       <div class="game-card">
+        <img
+          src="sunnyland.png"
+          alt="Samurai fight"
+        />
+        <h3>قتال ساموراي</h3>
+        <p>
+          لعبة ورق تقليدية. قارن أوراقك وتحدى خصومك في هذه اللعبة الاستراتيجية.
+        </p>
+        <button id="btnsouunyland">العب</button>
+      </div>
     </div>
 
     <script type="module">
@@ -149,6 +172,8 @@
         const btnPuzzle = document.getElementById("btnDragon");
         const btnPacman = document.getElementById("btnpacman");
         const btnfighting = document.getElementById("btnfighting");
+        const btntower = document.getElementById("btntower");
+        const btnsouny = document.getElementById("btnsouunyland");
 
         if (btnPlatform) {
           btnPlatform.addEventListener("click", () => {
@@ -181,6 +206,18 @@
           btnfighting.addEventListener("click", () => {
             console.log("Card button clicked");
             openGame("Fighting game");
+          });
+        }
+        if (btntower) {
+          btntower.addEventListener("click", () => {
+            console.log("Card button clicked");
+            openGame("tower defense");
+          });
+        }
+           if (btnsouny) {
+          btnsouny.addEventListener("click", () => {
+            console.log("Card button clicked");
+            openGame("sounnyland");
           });
         }
 
