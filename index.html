@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -18,21 +18,11 @@
         background-size: cover;
         background-position: center;
       }
+
     </style>
   </head>
   <body>
     <nav class="navbar">
-      <a href="#" class="logo">
-        <span class="logo-icon">✦</span>
-        <span class="logo-text">M<span class="Games-text">Games</span> </span>
-        <span class="logo-icon">✦</span>
-      </a>
-      <ul class="nav-links">
-        <li ><a href="#">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Pricing</a></li>
-      </ul>
-
       <div class="hamburger-menu">
         <button class="hamburger-btn" id="hamburgerBtn">
           <span class="hamburger-line"></span>
@@ -41,12 +31,17 @@
         </button>
 
         <ul class="menu-items" id="menuItems">
-          <li ><a>Disc</a></li>
-          <li ><a>Order Puzzle</a></li>
-          <li><a href="#">Puzzle</a></li>
-          <li><a href="#">Logout</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#" id="register">Logout</a></li>
         </ul>
       </div>
+      <a href="#" class="logo">
+        <span class="logo-text">M<span class="Games-text">Games</span> </span>
+        <span class="logo-icon">✦</span>
+      </a>
+      <ul class="nav-links"></ul>
+      <img id="profile" src="public/sunnyland.png" alt="" />
     </nav>
 
     <div class="loader" id="pageloader">
@@ -123,19 +118,24 @@
         <p>تحديات ممتعه, العاب ذكاء والكثير</p>
       </div>
 
-      <button  class="button-main">
-        ابداء اللعب
-      </button>
+      <button class="button-main">ابداء اللعب</button>
     </div>
 
     <iframe
       src=""
       id="contentFrame"
-      style="border: none; display: none; height:630px; width: 100vw; margin-top: 1%;"
+      style="
+        border: none;
+        display: none;
+        height: 630px;
+        width: 100vw;
+        margin-top: 1%;
+      "
+      allowfullscreen
       tabindex="0"
     ></iframe>
 
-    <script  src="/src/main.js"></script>
-      <script type="module" src="src/router.js"></script>
+    <script src="/src/main.js"></script>
+    <script type="module" src="src/router.js"></script>
   </body>
 </html>
