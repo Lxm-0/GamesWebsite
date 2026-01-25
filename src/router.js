@@ -34,6 +34,9 @@ export function openGame(gameName) {
             case "Billionare":
             path = "public/Billionare Game/Billionare.html";
             break;
+             case "Dice":
+            path = "public/Dice Game/Dice.html";
+            break;
         default:
             path = "public/Games.html";
 
