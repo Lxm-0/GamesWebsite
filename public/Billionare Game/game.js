@@ -1,0 +1,1061 @@
+const MillionaireGame = {
+    config: {
+        totalQuestions: 15,
+        timePerQuestion: 30,
+        prizeLevels: [
+            1000, 2000, 3000, 5000, 10000,
+            20000, 40000, 80000, 160000, 320000,
+            640000, 1250000, 2500000, 5000000, 10000000
+        ]
+    },
+
+    state: {
+        currentQuestionIndex: 0,
+        score: 0,
+        currentPrize: 0,
+        isGameActive: false,
+        answeredQuestions: [],
+        timeRemaining: 30,
+        timerInterval: null,
+        lifelines: {
+            fiftyFifty: true,
+            skipQuestion: true,
+            extraTime: true
+        },
+        startTime: null,
+        correctAnswersStreak: 0
+    },
+
+    elements: {},
+
+    // ============================================
+    // بنك الأسئلة - 500 سؤال في تقنية المعلومات
+    // ============================================
+
+    questions: [
+
+        // ==========================================
+        // المستوى 1: سهل (100 سؤال)
+        // قواعد البيانات (25) + معمارية حاسوب (25) + هياكل بيانات (25) + برمجة مرئية (25)
+        // ==========================================
+
+        // قواعد البيانات (25 سؤال)
+        { question: "ما هو اختصار SQL؟", options: ["Structured Query Language", "Simple Query Language", "Standard Query Language", "System Query Language"], correctAnswer: 0, level: 1 },
+        { question: "ما هو المفتاح الأساسي (Primary Key)؟", options: ["حقل فريد يحدد كل سجل", "حقل يربط جدولين", "حقل يحتوي على أرقام", "حقل اختياري"], correctAnswer: 0, level: 1 },
+        { question: "أي أمر SQL يُستخدم لاسترجاع البيانات؟", options: ["GET", "SELECT", "RETRIEVE", "FETCH"], correctAnswer: 1, level: 1 },
+        { question: "ما نوع البيانات لتخزين نص طويل في SQL؟", options: ["INT", "VARCHAR", "DATE", "BOOLEAN"], correctAnswer: 1, level: 1 },
+        { question: "أمر SQL لإضافة سجل جديد؟", options: ["ADD", "INSERT", "CREATE", "NEW"], correctAnswer: 1, level: 1 },
+        { question: "ما هو المفتاح الأجنبي (Foreign Key)؟", options: ["مفتاح من جدول آخر", "مفتاح فريد", "مفتاح اختياري", "مفتاح رقمي"], correctAnswer: 0, level: 1 },
+        { question: "أمر SQL لحذف سجل؟", options: ["REMOVE", "DELETE", "DROP", "CLEAR"], correctAnswer: 1, level: 1 },
+        { question: "نوع البيانات لتخزين التاريخ؟", options: ["STRING", "DATE", "TIME", "DATETIME"], correctAnswer: 1, level: 1 },
+        { question: "أمر SQL لتحديث البيانات؟", options: ["MODIFY", "UPDATE", "CHANGE", "ALTER"], correctAnswer: 1, level: 1 },
+        { question: "أمر إنشاء جدول جديد؟", options: ["NEW TABLE", "CREATE TABLE", "MAKE TABLE", "BUILD TABLE"], correctAnswer: 1, level: 1 },
+        { question: "أمر حذف جدول كامل؟", options: ["DELETE TABLE", "DROP TABLE", "REMOVE TABLE", "CLEAR TABLE"], correctAnswer: 1, level: 1 },
+        { question: "ما هو WHERE في SQL؟", options: ["شرط للتصفية", "أمر للحذف", "نوع بيانات", "اسم جدول"], correctAnswer: 0, level: 1 },
+        { question: "نوع بيانات لقيم صواب/خطأ؟", options: ["INT", "VARCHAR", "BOOLEAN", "DATE"], correctAnswer: 2, level: 1 },
+        { question: "ما هو ORDER BY؟", options: ["ترتيب النتائج", "حذف البيانات", "إضافة سجل", "تحديث البيانات"], correctAnswer: 0, level: 1 },
+        { question: "ما هو COUNT()؟", options: ["دالة لحساب عدد السجلات", "أمر للحذف", "نوع بيانات", "شرط"], correctAnswer: 0, level: 1 },
+        { question: "كلمة لتحديد القيم الفريدة؟", options: ["UNIQUE", "DISTINCT", "DIFFERENT", "SINGLE"], correctAnswer: 1, level: 1 },
+        { question: "ما هو SUM()؟", options: ["دالة لجمع القيم", "دالة للطرح", "دالة للضرب", "دالة للقسمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو AVG()؟", options: ["دالة لحساب المتوسط", "دالة للحد الأدنى", "دالة للحد الأقصى", "دالة للعد"], correctAnswer: 0, level: 1 },
+        { question: "ما هو MAX()؟", options: ["دالة للقيمة الأكبر", "دالة للقيمة الأصغر", "دالة للجمع", "دالة للمتوسط"], correctAnswer: 0, level: 1 },
+        { question: "ما هو MIN()؟", options: ["دالة للقيمة الأصغر", "دالة للقيمة الأكبر", "دالة للجمع", "دالة للمتوسط"], correctAnswer: 0, level: 1 },
+        { question: "ما هو GROUP BY؟", options: ["تجميع النتائج", "ترتيب النتائج", "حذف النتائج", "تحديث النتائج"], correctAnswer: 0, level: 1 },
+        { question: "ما هو HAVING؟", options: ["شرط للمجموعات", "شرط للسجلات", "أمر للحذف", "أمر للإضافة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو INNER JOIN؟", options: ["دمج بالسجلات المتطابقة", "دمج جميع السجلات", "حذف السجلات", "تحديث السجلات"], correctAnswer: 0, level: 1 },
+        { question: "ما هو LEFT JOIN؟", options: ["دمج جميع سجلات الجدول الأيسر", "دمج سجلات الجدول الأيمن", "دمج السجلات المتطابقة", "حذف السجلات"], correctAnswer: 0, level: 1 },
+        { question: "نوع البيانات INT؟", options: ["أعداد صحيحة", "نصوص", "تواريخ", "قيم منطقية"], correctAnswer: 0, level: 1 },
+
+        // معمارية الحاسوب (25 سؤال)
+        { question: "ما هو اختصار CPU؟", options: ["Central Processing Unit", "Computer Processing Unit", "Central Program Unit", "Computer Program Unit"], correctAnswer: 0, level: 1 },
+        { question: "وحدة قياس سرعة المعالج؟", options: ["Byte", "Hertz", "Bit", "MB"], correctAnswer: 1, level: 1 },
+        { question: "ما هو RAM؟", options: ["Random Access Memory", "Read Access Memory", "Rapid Access Memory", "Real Access Memory"], correctAnswer: 0, level: 1 },
+        { question: "ما هو ROM؟", options: ["Read Only Memory", "Random Only Memory", "Real Only Memory", "Rapid Only Memory"], correctAnswer: 0, level: 1 },
+        { question: "كم بت في البايت؟", options: ["4", "8", "16", "32"], correctAnswer: 1, level: 1 },
+        { question: "الجزء المسؤول عن العمليات الحسابية في CPU؟", options: ["ALU", "CU", "Register", "Cache"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Cache Memory؟", options: ["ذاكرة سريعة جداً", "ذاكرة بطيئة", "قرص صلب", "معالج"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Bus؟", options: ["مسار لنقل البيانات", "نوع معالج", "نوع ذاكرة", "برنامج"], correctAnswer: 0, level: 1 },
+        { question: "كم بايت في الكيلوبايت؟", options: ["100", "1000", "1024", "1048"], correctAnswer: 2, level: 1 },
+        { question: "ما هو GPU؟", options: ["Graphics Processing Unit", "General Processing Unit", "Game Processing Unit", "Global Processing Unit"], correctAnswer: 0, level: 1 },
+        { question: "ما هو SSD؟", options: ["Solid State Drive", "Super Speed Drive", "System State Drive", "Storage Speed Drive"], correctAnswer: 0, level: 1 },
+        { question: "ما هو HDD؟", options: ["Hard Disk Drive", "High Disk Drive", "Heavy Disk Drive", "Hybrid Disk Drive"], correctAnswer: 0, level: 1 },
+        { question: "الفرق بين RAM و ROM؟", options: ["RAM متطايرة و ROM غير متطايرة", "لا فرق", "RAM أسرع", "ROM أكبر"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Motherboard؟", options: ["اللوحة الأم", "المعالج", "الذاكرة", "القرص الصلب"], correctAnswer: 0, level: 1 },
+        { question: "ما هو PSU؟", options: ["وحدة تزويد الطاقة", "المعالج", "الذاكرة", "القرص الصلب"], correctAnswer: 0, level: 1 },
+        { question: "ما هو BIOS؟", options: ["Basic Input/Output System", "Binary Input/Output System", "Base Input/Output System", "Boot Input/Output System"], correctAnswer: 0, level: 1 },
+        { question: "وحدة قياس الذاكرة؟", options: ["Hertz", "Byte", "Watt", "Ampere"], correctAnswer: 1, level: 1 },
+        { question: "كم ميجابايت في الجيجابايت؟", options: ["100", "1000", "1024", "2048"], correctAnswer: 2, level: 1 },
+        { question: "ما هو Register في CPU؟", options: ["ذاكرة صغيرة سريعة", "معالج", "قرص صلب", "شاشة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Control Unit؟", options: ["وحدة التحكم في CPU", "وحدة الحساب", "ذاكرة", "قرص صلب"], correctAnswer: 0, level: 1 },
+        { question: "ما هو USB؟", options: ["Universal Serial Bus", "Unique Serial Bus", "Universal System Bus", "United Serial Bus"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Clock Speed؟", options: ["سرعة المعالج", "حجم المعالج", "عدد الأنوية", "نوع المعالج"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Core في المعالج؟", options: ["نواة معالجة", "ذاكرة", "قرص صلب", "شاشة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Dual Core؟", options: ["معالج بنواتين", "معالج بنواة واحدة", "معالج بأربع نوى", "معالج بثماني نوى"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Cooling Fan؟", options: ["مروحة تبريد", "معالج", "ذاكرة", "قرص صلب"], correctAnswer: 0, level: 1 },
+
+        // هياكل البيانات (25 سؤال)
+        { question: "ما هي Array؟", options: ["مصفوفة", "قائمة مربوطة", "شجرة", "رسم بياني"], correctAnswer: 0, level: 1 },
+        { question: "خاصية Stack الرئيسية؟", options: ["LIFO", "FIFO", "Random Access", "Sorted"], correctAnswer: 0, level: 1 },
+        { question: "خاصية Queue الرئيسية؟", options: ["FIFO", "LIFO", "Random Access", "Sorted"], correctAnswer: 0, level: 1 },
+        { question: "ماذا يعني LIFO؟", options: ["Last In First Out", "Last In Final Out", "Low In First Out", "Late In First Out"], correctAnswer: 0, level: 1 },
+        { question: "ماذا يعني FIFO؟", options: ["First In First Out", "Fast In First Out", "Final In First Out", "First In Final Out"], correctAnswer: 0, level: 1 },
+        { question: "عملية إضافة عنصر في Stack؟", options: ["Push", "Pop", "Enqueue", "Dequeue"], correctAnswer: 0, level: 1 },
+        { question: "عملية إزالة عنصر من Stack؟", options: ["Pop", "Push", "Enqueue", "Dequeue"], correctAnswer: 0, level: 1 },
+        { question: "عملية إضافة عنصر في Queue؟", options: ["Enqueue", "Dequeue", "Push", "Pop"], correctAnswer: 0, level: 1 },
+        { question: "عملية إزالة عنصر من Queue؟", options: ["Dequeue", "Enqueue", "Push", "Pop"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Linked List؟", options: ["قائمة مربوطة", "مصفوفة", "شجرة", "رسم بياني"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Node؟", options: ["عقدة تحتوي بيانات ومؤشر", "مصفوفة", "شجرة", "رسم بياني"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Binary Tree؟", options: ["شجرة ثنائية", "قائمة مربوطة", "مصفوفة", "رسم بياني"], correctAnswer: 0, level: 1 },
+        { question: "عدد الأطفال الأقصى في Binary Tree؟", options: ["2", "1", "3", "4"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Root؟", options: ["الجذر", "الورقة", "الفرع", "العقدة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Leaf؟", options: ["عقدة بلا أطفال", "الجذر", "عقدة لها طفلان", "الفرع"], correctAnswer: 0, level: 1 },
+        { question: "تعقيد الوصول لعنصر في Array؟", options: ["O(1)", "O(n)", "O(log n)", "O(n²)"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Hash Table؟", options: ["جدول تجزئة", "قائمة مربوطة", "شجرة", "مصفوفة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Graph؟", options: ["رسم بياني", "شجرة", "قائمة مربوطة", "مصفوفة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Vertex؟", options: ["عقدة", "حافة", "مسار", "دائرة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Edge؟", options: ["حافة تربط عقدتين", "عقدة", "مسار", "دائرة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Heap؟", options: ["كومة", "قائمة", "شجرة عادية", "مصفوفة"], correctAnswer: 0, level: 1 },
+        { question: "الفرق بين Array و Linked List؟", options: ["Array حجم ثابت", "لا فرق", "Array أبطأ", "Linked List ثابت"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Circular Queue؟", options: ["قائمة انتظار دائرية", "قائمة مربوطة", "شجرة", "مصفوفة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Priority Queue؟", options: ["قائمة ذات أولوية", "قائمة عادية", "شجرة", "مصفوفة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Double Linked List؟", options: ["قائمة مربوطة مزدوجة", "قائمة أحادية", "شجرة", "مصفوفة"], correctAnswer: 0, level: 1 },
+
+        // البرمجة المرئية (25 سؤال)
+        { question: "ما هو GUI؟", options: ["Graphical User Interface", "General User Interface", "Global User Interface", "Graphics User Input"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Button؟", options: ["زر", "مربع نص", "قائمة", "صورة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو TextBox؟", options: ["مربع نص", "زر", "قائمة", "صورة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Label؟", options: ["تسمية توضيحية", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو ComboBox؟", options: ["قائمة منسدلة", "زر", "مربع نص", "صورة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو CheckBox؟", options: ["مربع اختيار", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو RadioButton؟", options: ["زر اختيار واحد", "مربع اختيار متعدد", "زر عادي", "مربع نص"], correctAnswer: 0, level: 1 },
+        { question: "ما هو ListBox؟", options: ["صندوق قائمة", "زر", "مربع نص", "صورة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Event؟", options: ["حدث", "دالة", "متغير", "فئة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Click Event؟", options: ["حدث النقر", "حدث الإدخال", "حدث التحميل", "حدث الإغلاق"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Form؟", options: ["نافذة", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Panel؟", options: ["لوحة لتجميع العناصر", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو ToolTip؟", options: ["تلميح نصي", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو MenuStrip؟", options: ["شريط قوائم", "زر", "مربع نص", "قائمة منسدلة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو ProgressBar؟", options: ["شريط تقدم", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو DataGridView؟", options: ["جدول بيانات", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو PictureBox؟", options: ["صندوق صورة", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو Timer؟", options: ["مؤقت", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو TabControl؟", options: ["تحكم بألسنة التبويب", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو DateTimePicker؟", options: ["منتقي التاريخ والوقت", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو NumericUpDown؟", options: ["صندوق أرقام بأسهم", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو RichTextBox؟", options: ["مربع نص منسق", "مربع نص عادي", "زر", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو GroupBox؟", options: ["صندوق تجميع", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+        { question: "ما هو StatusStrip؟", options: ["شريط الحالة", "شريط القوائم", "زر", "مربع نص"], correctAnswer: 0, level: 1 },
+        { question: "ما هو MessageBox؟", options: ["صندوق رسالة", "زر", "مربع نص", "قائمة"], correctAnswer: 0, level: 1 },
+
+
+        // ==========================================
+        // المستوى 2: متوسط (100 سؤال)
+        // إحصاء واحتمالات (33) + Oracle PL/SQL (33) + تطوير الويب (34)
+        // ==========================================
+
+        // الإحصاء والاحتمالات (33 سؤال)
+        { question: "ما هو الوسط الحسابي (Mean)؟", options: ["مجموع القيم ÷ عددها", "القيمة الوسطى", "القيمة الأكثر تكراراً", "الفرق بين أكبر وأصغر قيمة"], correctAnswer: 0, level: 2 },
+        { question: "ما هو الوسيط (Median)؟", options: ["القيمة الوسطى المرتبة", "مجموع القيم ÷ عددها", "القيمة الأكثر تكراراً", "الفرق بين القيم"], correctAnswer: 0, level: 2 },
+        { question: "ما هو المنوال (Mode)؟", options: ["القيمة الأكثر تكراراً", "القيمة الوسطى", "مجموع القيم", "الفرق بين القيم"], correctAnswer: 0, level: 2 },
+        { question: "ما هو المدى (Range)؟", options: ["الفرق بين أكبر وأصغر قيمة", "مجموع القيم", "القيمة الوسطى", "القيمة المتكررة"], correctAnswer: 0, level: 2 },
+        { question: "ما هو الانحراف المعياري؟", options: ["مقياس تشتت البيانات", "مجموع البيانات", "متوسط البيانات", "أقصى قيمة"], correctAnswer: 0, level: 2 },
+        { question: "ما هو التباين (Variance)؟", options: ["مربع الانحراف المعياري", "مجموع القيم", "متوسط القيم", "الفرق بين القيم"], correctAnswer: 0, level: 2 },
+        { question: "ما هو الاحتمال؟", options: ["نسبة حدوث حدث معين", "عدد النتائج", "مجموع الأحداث", "الفرق بين الأحداث"], correctAnswer: 0, level: 2 },
+        { question: "قيمة الاحتمال تتراوح بين؟", options: ["0 و 1", "-1 و 1", "0 و 100", "1 و 10"], correctAnswer: 0, level: 2 },
+        { question: "ما هو الحدث المستحيل؟", options: ["احتماله = 0", "احتماله = 1", "احتماله = 0.5", "احتماله = -1"], correctAnswer: 0, level: 2 },
+        { question: "ما هو الحدث الأكيد؟", options: ["احتماله = 1", "احتماله = 0", "احتماله = 0.5", "احتماله = 2"], correctAnswer: 0, level: 2 },
+        { question: "ما هو التوزيع الطبيعي؟", options: ["توزيع على شكل جرس", "توزيع خطي", "توزيع دائري", "توزيع عشوائي"], correctAnswer: 0, level: 2 },
+        { question: "ما هو معامل الارتباط؟", options: ["يقيس العلاقة بين متغيرين", "يقيس المتوسط", "يقيس التباين", "يقيس المدى"], correctAnswer: 0, level: 2 },
+        { question: "قيم معامل الارتباط تتراوح بين؟", options: ["-1 و +1", "0 و 1", "0 و 100", "-10 و +10"], correctAnswer: 0, level: 2 },
+        { question: "ما هو الربيع (Quartile)؟", options: ["تقسيم البيانات إلى 4 أجزاء", "تقسيم إلى 2 أجزاء", "تقسيم إلى 10 أجزاء", "تقسيم إلى 100 جزء"], correctAnswer: 0, level: 2 },
+        { question: "ما هي العينة (Sample)؟", options: ["جزء من المجتمع", "كل المجتمع", "متوسط البيانات", "مجموع البيانات"], correctAnswer: 0, level: 2 },
+        { question: "ما هو المجتمع (Population)؟", options: ["جميع العناصر المدروسة", "جزء من العناصر", "عينة صغيرة", "متوسط القيم"], correctAnswer: 0, level: 2 },
+        { question: "ما هو الخطأ المعياري؟", options: ["انحراف معياري العينة", "متوسط العينة", "مجموع العينة", "مدى العينة"], correctAnswer: 0, level: 2 },
+        { question: "ما هو اختبار t؟", options: ["اختبار للفرق بين متوسطين", "اختبار للجمع", "اختبار للضرب", "اختبار للقسمة"], correctAnswer: 0, level: 2 },
+        { question: "ما هو اختبار Chi-Square؟", options: ["اختبار الاستقلالية", "اختبار المتوسط", "اختبار الجمع", "اختبار الطرح"], correctAnswer: 0, level: 2 },
+        { question: "ما هي الفرضية الصفرية؟", options: ["فرضية عدم وجود فرق", "فرضية وجود فرق", "فرضية الجمع", "فرضية الطرح"], correctAnswer: 0, level: 2 },
+        { question: "ما هي الفرضية البديلة؟", options: ["فرضية وجود فرق", "فرضية عدم وجود فرق", "فرضية الجمع", "فرضية الطرح"], correctAnswer: 0, level: 2 },
+        { question: "ما هو مستوى الدلالة α؟", options: ["احتمال الخطأ من النوع الأول", "المتوسط", "التباين", "المدى"], correctAnswer: 0, level: 2 },
+        { question: "القيمة الشائعة لمستوى الدلالة؟", options: ["0.05", "0.5", "1", "10"], correctAnswer: 0, level: 2 },
+        { question: "ما هو P-value؟", options: ["احتمال الحصول على النتيجة", "المتوسط", "التباين", "المدى"], correctAnswer: 0, level: 2 },
+        { question: "إذا كان P-value < α؟", options: ["نرفض الفرضية الصفرية", "نقبل الفرضية الصفرية", "لا نفعل شيء", "نعيد الاختبار"], correctAnswer: 0, level: 2 },
+        { question: "ما هو الانحدار الخطي؟", options: ["نموذج للعلاقة الخطية", "نموذج دائري", "نموذج عشوائي", "نموذج ثابت"], correctAnswer: 0, level: 2 },
+        { question: "ما هو المتغير المستقل؟", options: ["المتغير الذي نتحكم به", "المتغير الناتج", "المتغير الثابت", "المتغير العشوائي"], correctAnswer: 0, level: 2 },
+        { question: "ما هو المتغير التابع؟", options: ["المتغير الناتج", "المتغير المستقل", "المتغير الثابت", "المتغير العشوائي"], correctAnswer: 0, level: 2 },
+        { question: "ما هو R²؟", options: ["معامل التحديد", "الانحراف المعياري", "المتوسط", "المدى"], correctAnswer: 0, level: 2 },
+        { question: "قيم R² تتراوح بين؟", options: ["0 و 1", "-1 و 1", "0 و 100", "1 و 10"], correctAnswer: 0, level: 2 },
+        { question: "ما هو التوزيع ذو الحدين؟", options: ["توزيع احتمالي منفصل", "توزيع مستمر", "توزيع خطي", "توزيع دائري"], correctAnswer: 0, level: 2 },
+        { question: "ما هو توزيع بواسون؟", options: ["توزيع للأحداث النادرة", "توزيع طبيعي", "توزيع خطي", "توزيع دائري"], correctAnswer: 0, level: 2 },
+        { question: "رمز الانحراف المعياري للمجتمع؟", options: ["σ (سيجما)", "μ (ميو)", "α (ألفا)", "β (بيتا)"], correctAnswer: 0, level: 2 },
+
+        // Oracle PL/SQL (33 سؤال)
+        { question: "ما هو PL/SQL؟", options: ["Procedural Language/SQL", "Programming Language/SQL", "Public Language/SQL", "Private Language/SQL"], correctAnswer: 0, level: 2 },
+        { question: "كيف تبدأ كتلة PL/SQL؟", options: ["BEGIN", "START", "OPEN", "RUN"], correctAnswer: 0, level: 2 },
+        { question: "كيف تنهي كتلة PL/SQL؟", options: ["END;", "STOP;", "CLOSE;", "FINISH;"], correctAnswer: 0, level: 2 },
+        { question: "ما هو DECLARE؟", options: ["تصريح عن المتغيرات", "تنفيذ الكود", "إنهاء الكود", "حذف المتغيرات"], correctAnswer: 0, level: 2 },
+        { question: "كيف تطبع نص في PL/SQL؟", options: ["DBMS_OUTPUT.PUT_LINE", "PRINT", "ECHO", "DISPLAY"], correctAnswer: 0, level: 2 },
+        { question: "ما هو VARCHAR2؟", options: ["نوع بيانات نصي متغير", "نوع بيانات رقمي", "نوع بيانات تاريخ", "نوع بيانات منطقي"], correctAnswer: 0, level: 2 },
+        { question: "ما هو NUMBER في PL/SQL؟", options: ["نوع بيانات رقمي", "نوع بيانات نصي", "نوع بيانات تاريخ", "نوع بيانات منطقي"], correctAnswer: 0, level: 2 },
+        { question: "ما هو DATE؟", options: ["نوع بيانات التاريخ", "نوع بيانات النص", "نوع بيانات الأرقام", "نوع بيانات المنطق"], correctAnswer: 0, level: 2 },
+        { question: "ما هو BOOLEAN؟", options: ["نوع بيانات منطقي", "نوع بيانات نصي", "نوع بيانات رقمي", "نوع بيانات تاريخ"], correctAnswer: 0, level: 2 },
+        { question: "كيف تعلن عن متغير؟", options: ["variable_name datatype;", "var variable_name;", "declare variable_name;", "new variable_name;"], correctAnswer: 0, level: 2 },
+        { question: "ما هو := في PL/SQL؟", options: ["عامل الإسناد", "عامل المقارنة", "عامل الجمع", "عامل الطرح"], correctAnswer: 0, level: 2 },
+        { question: "ما هو IF في PL/SQL؟", options: ["جملة شرطية", "حلقة تكرار", "إجراء", "دالة"], correctAnswer: 0, level: 2 },
+        { question: "كيف تنهي جملة IF؟", options: ["END IF;", "FI;", "ENDIF;", "CLOSE IF;"], correctAnswer: 0, level: 2 },
+        { question: "ما هو ELSIF؟", options: ["شرط إضافي", "نهاية الشرط", "بداية الشرط", "حلقة تكرار"], correctAnswer: 0, level: 2 },
+        { question: "ما هو LOOP؟", options: ["حلقة تكرار", "جملة شرطية", "إجراء", "دالة"], correctAnswer: 0, level: 2 },
+        { question: "كيف تخرج من حلقة LOOP؟", options: ["EXIT;", "BREAK;", "STOP;", "END;"], correctAnswer: 0, level: 2 },
+        { question: "ما هو FOR LOOP؟", options: ["حلقة بعداد", "حلقة لا نهائية", "جملة شرطية", "إجراء"], correctAnswer: 0, level: 2 },
+        { question: "ما هو WHILE LOOP؟", options: ["حلقة بشرط", "حلقة بعداد", "جملة شرطية", "إجراء"], correctAnswer: 0, level: 2 },
+        { question: "ما هو CURSOR؟", options: ["مؤشر لنتائج الاستعلام", "متغير", "حلقة", "شرط"], correctAnswer: 0, level: 2 },
+        { question: "كيف تفتح cursor؟", options: ["OPEN cursor_name;", "START cursor_name;", "BEGIN cursor_name;", "RUN cursor_name;"], correctAnswer: 0, level: 2 },
+        { question: "كيف تجلب بيانات من cursor؟", options: ["FETCH", "GET", "READ", "TAKE"], correctAnswer: 0, level: 2 },
+        { question: "كيف تغلق cursor؟", options: ["CLOSE cursor_name;", "END cursor_name;", "STOP cursor_name;", "FINISH cursor_name;"], correctAnswer: 0, level: 2 },
+        { question: "ما هو %TYPE؟", options: ["يرث نوع عمود", "نوع بيانات جديد", "حلقة تكرار", "جملة شرطية"], correctAnswer: 0, level: 2 },
+        { question: "ما هو %ROWTYPE؟", options: ["يرث بنية صف كامل", "نوع بيانات", "حلقة", "شرط"], correctAnswer: 0, level: 2 },
+        { question: "ما هو PROCEDURE؟", options: ["إجراء مخزن", "دالة", "متغير", "حلقة"], correctAnswer: 0, level: 2 },
+        { question: "ما هو FUNCTION؟", options: ["دالة تُرجع قيمة", "إجراء", "متغير", "حلقة"], correctAnswer: 0, level: 2 },
+        { question: "الفرق بين PROCEDURE و FUNCTION؟", options: ["FUNCTION ترجع قيمة", "لا فرق", "PROCEDURE أسرع", "FUNCTION أبطأ"], correctAnswer: 0, level: 2 },
+        { question: "ما هو EXCEPTION؟", options: ["معالجة الأخطاء", "متغير", "حلقة", "شرط"], correctAnswer: 0, level: 2 },
+        { question: "ما هو WHEN OTHERS؟", options: ["يلتقط جميع الأخطاء", "شرط عادي", "حلقة", "متغير"], correctAnswer: 0, level: 2 },
+        { question: "ما هو RAISE؟", options: ["رفع استثناء", "حلقة", "شرط", "متغير"], correctAnswer: 0, level: 2 },
+        { question: "ما هو COMMIT؟", options: ["حفظ التغييرات", "إلغاء التغييرات", "حذف البيانات", "تحديث البيانات"], correctAnswer: 0, level: 2 },
+        { question: "ما هو ROLLBACK؟", options: ["إلغاء التغييرات", "حفظ التغييرات", "حذف البيانات", "تحديث البيانات"], correctAnswer: 0, level: 2 },
+        { question: "ما هو SAVEPOINT؟", options: ["نقطة حفظ مؤقتة", "حفظ نهائي", "حذف", "تحديث"], correctAnswer: 0, level: 2 },
+
+        // تطوير الويب (34 سؤال)
+        { question: "ما هو HTML؟", options: ["HyperText Markup Language", "HighText Markup Language", "HyperText Machine Language", "HighText Machine Language"], correctAnswer: 0, level: 2 },
+        { question: "ما هو CSS؟", options: ["Cascading Style Sheets", "Computer Style Sheets", "Creative Style Sheets", "Colorful Style Sheets"], correctAnswer: 0, level: 2 },
+        { question: "ما هو JavaScript؟", options: ["لغة برمجة للويب", "لغة تنسيق", "قاعدة بيانات", "نظام تشغيل"], correctAnswer: 0, level: 2 },
+        { question: "ما هو DOM؟", options: ["Document Object Model", "Data Object Model", "Digital Object Model", "Dynamic Object Model"], correctAnswer: 0, level: 2 },
+        { question: "ما هو HTTP؟", options: ["HyperText Transfer Protocol", "HighText Transfer Protocol", "HyperText Transport Protocol", "HighText Transport Protocol"], correctAnswer: 0, level: 2 },
+        { question: "ما هو HTTPS؟", options: ["HTTP Secure", "HTTP System", "HTTP Server", "HTTP Standard"], correctAnswer: 0, level: 2 },
+        { question: "ما هو URL؟", options: ["Uniform Resource Locator", "Universal Resource Locator", "Unique Resource Locator", "United Resource Locator"], correctAnswer: 0, level: 2 },
+        { question: "ما هو JSON؟", options: ["JavaScript Object Notation", "Java Standard Object Notation", "JavaScript Online Notation", "Java Simple Object Notation"], correctAnswer: 0, level: 2 },
+        { question: "ما هو XML؟", options: ["eXtensible Markup Language", "eXtra Markup Language", "eXternal Markup Language", "eXecutable Markup Language"], correctAnswer: 0, level: 2 },
+        { question: "ما هو AJAX؟", options: ["Asynchronous JavaScript And XML", "Advanced JavaScript And XML", "Automatic JavaScript And XML", "Active JavaScript And XML"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Bootstrap؟", options: ["إطار عمل CSS", "لغة برمجة", "قاعدة بيانات", "خادم ويب"], correctAnswer: 0, level: 2 },
+        { question: "ما هو React؟", options: ["مكتبة JavaScript", "لغة برمجة", "قاعدة بيانات", "نظام تشغيل"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Angular؟", options: ["إطار عمل JavaScript", "لغة برمجة", "قاعدة بيانات", "خادم ويب"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Vue.js؟", options: ["إطار عمل JavaScript", "لغة برمجة", "قاعدة بيانات", "خادم ويب"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Node.js؟", options: ["بيئة تشغيل JavaScript", "لغة برمجة", "قاعدة بيانات", "متصفح"], correctAnswer: 0, level: 2 },
+        { question: "ما هو npm؟", options: ["Node Package Manager", "New Package Manager", "Node Program Manager", "New Program Manager"], correctAnswer: 0, level: 2 },
+        { question: "ما هو REST API؟", options: ["نمط معماري لخدمات الويب", "لغة برمجة", "قاعدة بيانات", "متصفح"], correctAnswer: 0, level: 2 },
+        { question: "ما هو GET في HTTP؟", options: ["طلب لاسترجاع البيانات", "طلب لإرسال البيانات", "طلب لحذف البيانات", "طلب لتحديث البيانات"], correctAnswer: 0, level: 2 },
+        { question: "ما هو POST في HTTP؟", options: ["طلب لإرسال البيانات", "طلب لاسترجاع البيانات", "طلب لحذف البيانات", "طلب لتحديث البيانات"], correctAnswer: 0, level: 2 },
+        { question: "ما هو PUT في HTTP؟", options: ["طلب لتحديث البيانات", "طلب لإرسال البيانات", "طلب لحذف البيانات", "طلب لاسترجاع البيانات"], correctAnswer: 0, level: 2 },
+        { question: "ما هو DELETE في HTTP؟", options: ["طلب لحذف البيانات", "طلب لإرسال البيانات", "طلب لتحديث البيانات", "طلب لاسترجاع البيانات"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Status Code 200؟", options: ["نجاح الطلب", "خطأ في الطلب", "خطأ في الخادم", "غير موجود"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Status Code 404؟", options: ["غير موجود", "نجاح", "خطأ في الخادم", "غير مصرح"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Status Code 500؟", options: ["خطأ في الخادم", "نجاح", "غير موجود", "غير مصرح"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Responsive Design؟", options: ["تصميم متجاوب مع الشاشات", "تصميم ثابت", "تصميم قديم", "تصميم بطيء"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Flexbox؟", options: ["نموذج تخطيط CSS", "لغة برمجة", "قاعدة بيانات", "خادم"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Grid في CSS؟", options: ["نظام شبكة للتخطيط", "لغة برمجة", "قاعدة بيانات", "خادم"], correctAnswer: 0, level: 2 },
+        { question: "ما هو localStorage؟", options: ["تخزين محلي في المتصفح", "قاعدة بيانات", "خادم", "لغة برمجة"], correctAnswer: 0, level: 2 },
+        { question: "ما هو sessionStorage؟", options: ["تخزين مؤقت للجلسة", "تخزين دائم", "قاعدة بيانات", "خادم"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Cookie؟", options: ["ملف نصي صغير مخزن", "قاعدة بيانات", "خادم", "لغة برمجة"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Webpack؟", options: ["أداة لتجميع الملفات", "لغة برمجة", "قاعدة بيانات", "خادم"], correctAnswer: 0, level: 2 },
+        { question: "ما هو Babel؟", options: ["محول لكود JavaScript", "لغة برمجة", "قاعدة بيانات", "خادم"], correctAnswer: 0, level: 2 },
+        { question: "ما هو SPA؟", options: ["Single Page Application", "Simple Page Application", "Standard Page Application", "Super Page Application"], correctAnswer: 0, level: 2 },
+        { question: "ما هو PWA؟", options: ["Progressive Web App", "Public Web App", "Private Web App", "Portable Web App"], correctAnswer: 0, level: 2 },
+
+
+        // ==========================================
+        // المستوى 3: متوسط-صعب (100 سؤال)
+        // الشبكات (25) + أمن المعلومات (25) + الخوارزميات (25) + أنظمة التشغيل (25)
+        // ==========================================
+
+        // الشبكات (25 سؤال)
+        { question: "ما هو IP؟", options: ["Internet Protocol", "Internal Protocol", "Input Protocol", "Interface Protocol"], correctAnswer: 0, level: 3 },
+        { question: "كم عدد طبقات نموذج OSI؟", options: ["5", "6", "7", "8"], correctAnswer: 2, level: 3 },
+        { question: "ما هي الطبقة الأولى في OSI؟", options: ["Physical", "Data Link", "Network", "Transport"], correctAnswer: 0, level: 3 },
+        { question: "ما هو TCP؟", options: ["Transmission Control Protocol", "Transfer Control Protocol", "Transport Connection Protocol", "Terminal Control Protocol"], correctAnswer: 0, level: 3 },
+        { question: "ما هو UDP؟", options: ["User Datagram Protocol", "Universal Datagram Protocol", "Unique Datagram Protocol", "United Datagram Protocol"], correctAnswer: 0, level: 3 },
+        { question: "رقم Port لخدمة HTTP؟", options: ["21", "22", "80", "443"], correctAnswer: 2, level: 3 },
+        { question: "رقم Port لخدمة HTTPS؟", options: ["80", "443", "21", "22"], correctAnswer: 1, level: 3 },
+        { question: "رقم Port لخدمة FTP؟", options: ["21", "22", "80", "443"], correctAnswer: 0, level: 3 },
+        { question: "رقم Port لخدمة SSH؟", options: ["21", "22", "23", "25"], correctAnswer: 1, level: 3 },
+        { question: "ما هو DNS؟", options: ["Domain Name System", "Data Name System", "Digital Name System", "Dynamic Name System"], correctAnswer: 0, level: 3 },
+        { question: "ما هو DHCP؟", options: ["Dynamic Host Configuration Protocol", "Data Host Configuration Protocol", "Digital Host Configuration Protocol", "Domain Host Configuration Protocol"], correctAnswer: 0, level: 3 },
+        { question: "ما هو MAC Address؟", options: ["عنوان فيزيائي للجهاز", "عنوان منطقي", "عنوان الموقع", "عنوان البريد"], correctAnswer: 0, level: 3 },
+        { question: "كم بت في IPv4؟", options: ["16", "32", "64", "128"], correctAnswer: 1, level: 3 },
+        { question: "كم بت في IPv6؟", options: ["32", "64", "128", "256"], correctAnswer: 2, level: 3 },
+        { question: "ما هو Subnet Mask؟", options: ["قناع الشبكة الفرعية", "عنوان الشبكة", "رقم المنفذ", "نوع البروتوكول"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Router؟", options: ["موجه الشبكة", "مبدل", "مكرر", "جسر"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Switch؟", options: ["مبدل الشبكة", "موجه", "مكرر", "جسر"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Hub؟", options: ["مكرر إشارة", "موجه", "مبدل", "جسر"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Firewall؟", options: ["جدار ناري", "موجه", "مبدل", "مكرر"], correctAnswer: 0, level: 3 },
+        { question: "ما هو VPN؟", options: ["Virtual Private Network", "Virtual Public Network", "Visual Private Network", "Visual Public Network"], correctAnswer: 0, level: 3 },
+        { question: "ما هو LAN؟", options: ["Local Area Network", "Large Area Network", "Long Area Network", "Limited Area Network"], correctAnswer: 0, level: 3 },
+        { question: "ما هو WAN؟", options: ["Wide Area Network", "World Area Network", "Wireless Area Network", "Web Area Network"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Ping؟", options: ["أداة لاختبار الاتصال", "برو توكول", "عنوان IP", "نوع شبكة"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Bandwidth؟", options: ["عرض النطاق الترددي", "سرعة المعالج", "حجم الذاكرة", "حجم القرص"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Latency؟", options: ["زمن التأخير", "سرعة النقل", "عرض النطاق", "حجم البيانات"], correctAnswer: 0, level: 3 },
+
+        // أمن المعلومات (25 سؤال)
+        { question: "ما هو Encryption؟", options: ["تشفير البيانات", "فك التشفير", "حذف البيانات", "نسخ البيانات"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Decryption؟", options: ["فك التشفير", "تشفير البيانات", "حذف البيانات", "نسخ البيانات"], correctAnswer: 0, level: 3 },
+        { question: "ما هو SSL؟", options: ["Secure Sockets Layer", "Simple Sockets Layer", "Standard Sockets Layer", "System Sockets Layer"], correctAnswer: 0, level: 3 },
+        { question: "ما هو TLS؟", options: ["Transport Layer Security", "Transfer Layer Security", "Terminal Layer Security", "Total Layer Security"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Hash Function؟", options: ["دالة تجزئة", "دالة تشفير", "دالة فك تشفير", "دالة حذف"], correctAnswer: 0, level: 3 },
+        { question: "ما هو MD5؟", options: ["خوارزمية تجزئة", "بروتوكول شبكة", "نوع تشفير", "نظام تشغيل"], correctAnswer: 0, level: 3 },
+        { question: "ما هو SHA؟", options: ["Secure Hash Algorithm", "Simple Hash Algorithm", "Standard Hash Algorithm", "System Hash Algorithm"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Firewall؟", options: ["جدار ناري للحماية", "برنامج تصفح", "نظام تشغيل", "قاعدة بيانات"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Antivirus؟", options: ["برنامج مضاد فيروسات", "نظام تشغيل", "متصفح", "قاعدة بيانات"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Malware؟", options: ["برمجيات خبيثة", "برمجيات مفيدة", "نظام تشغيل", "متصفح"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Virus؟", options: ["فيروس حاسوبي", "برنامج مفيد", "نظام حماية", "قاعدة بيانات"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Trojan؟", options: ["حصان طروادة", "برنامج حماية", "نظام تشغيل", "متصفح"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Worm؟", options: ["دودة حاسوبية", "برنامج حماية", "نظام تشغيل", "متصفح"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Phishing؟", options: ["التصيد الاحتيالي", "برنامج حماية", "نظام تشفير", "بروتوكول شبكة"], correctAnswer: 0, level: 3 },
+        { question: "ما هو DDoS Attack؟", options: ["هجوم حجب الخدمة الموزع", "نظام حماية", "بروتوكول أمان", "طريقة تشفير"], correctAnswer: 0, level: 3 },
+        { question: "ما هو SQL Injection؟", options: ["حقن أوامر SQL خبيثة", "نظام حماية", "طريقة تشفير", "بروتوكول أمان"], correctAnswer: 0, level: 3 },
+        { question: "ما هو XSS؟", options: ["Cross-Site Scripting", "XML Site Scripting", "eXternal Site Scripting", "eXtended Site Scripting"], correctAnswer: 0, level: 3 },
+        { question: "ما هو CSRF؟", options: ["Cross-Site Request Forgery", "Computer Site Request Forgery", "Client Site Request Forgery", "Code Site Request Forgery"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Two-Factor Authentication؟", options: ["مصادقة ثنائية", "مصادقة أحادية", "تشفير ثنائي", "حماية أحادية"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Biometric Authentication؟", options: ["مصادقة بيومترية", "مصادقة نصية", "مصادقة رقمية", "مصادقة صوتية"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Digital Certificate؟", options: ["شهادة رقمية", "تشفير رقمي", "توقيع رقمي", "بصمة رقمية"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Digital Signature؟", options: ["توقيع رقمي", "شهادة رقمية", "تشفير رقمي", "بصمة رقمية"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Public Key؟", options: ["مفتاح عام", "مفتاح خاص", "مفتاح مشترك", "مفتاح سري"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Private Key؟", options: ["مفتاح خاص", "مفتاح عام", "مفتاح مشترك", "مفتاح سري"], correctAnswer: 0, level: 3 },
+        { question: "ما هو VPN؟", options: ["شبكة افتراضية خاصة", "شبكة عامة", "شبكة محلية", "شبكة واسعة"], correctAnswer: 0, level: 3 },
+
+        // الخوارزميات (25 سؤال)
+        { question: "ما هو Big O Notation؟", options: ["رمز لتعقيد الخوارزمية", "اسم خوارزمية", "نوع بيانات", "لغة برمجة"], correctAnswer: 0, level: 3 },
+        { question: "تعقيد Binary Search؟", options: ["O(log n)", "O(n)", "O(n²)", "O(1)"], correctAnswer: 0, level: 3 },
+        { question: "تعقيد Linear Search؟", options: ["O(n)", "O(log n)", "O(n²)", "O(1)"], correctAnswer: 0, level: 3 },
+        { question: "تعقيد Bubble Sort؟", options: ["O(n²)", "O(n)", "O(log n)", "O(n log n)"], correctAnswer: 0, level: 3 },
+        { question: "تعقيد Quick Sort في المتوسط؟", options: ["O(n log n)", "O(n²)", "O(n)", "O(log n)"], correctAnswer: 0, level: 3 },
+        { question: "تعقيد Merge Sort؟", options: ["O(n log n)", "O(n²)", "O(n)", "O(log n)"], correctAnswer: 0, level: 3 },
+        { question: "ما هي Recursion؟", options: ["استدعاء دالة لنفسها", "حلقة تكرار", "شرط منطقي", "متغير عام"], correctAnswer: 0, level: 3 },
+        { question: "ما هي Iteration؟", options: ["التكرار باستخدام حلقات", "استدعاء دالة", "شرط منطقي", "متغير عام"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Divide and Conquer؟", options: ["فرق تسد", "حلقة تكرار", "شرط منطقي", "نوع بيانات"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Dynamic Programming؟", options: ["برمجة ديناميكية", "برمجة ثابتة", "برمجة مرئية", "برمجة كائنية"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Greedy Algorithm؟", options: ["خوارزمية جشعة", "خوارزمية عادلة", "خوارزمية عشوائية", "خوارزمية ثابتة"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Backtracking؟", options: ["التراجع", "التقدم", "التوقف", "الاستمرار"], correctAnswer: 0, level: 3 },
+        { question: "ما هو BFS؟", options: ["Breadth-First Search", "Binary First Search", "Best First Search", "Bottom First Search"], correctAnswer: 0, level: 3 },
+        { question: "ما هو DFS؟", options: ["Depth-First Search", "Data First Search", "Dynamic First Search", "Direct First Search"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Dijkstra's Algorithm؟", options: ["خوارزمية لأقصر مسار", "خوارزمية فرز", "خوارزمية بحث", "خوارزمية تشفير"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Fibonacci Sequence؟", options: ["متتالية فيبوناتشي", "خوارزمية فرز", "خوارزمية بحث", "نوع بيانات"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Sorting Algorithm؟", options: ["خوارزمية فرز", "خوارزمية بحث", "خوارزمية تشفير", "خوارزمية ضغط"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Searching Algorithm؟", options: ["خوارزمية بحث", "خوارزمية فرز", "خوارزمية تشفير", "خوارزمية ضغط"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Time Complexity؟", options: ["تعقيد زمني", "تعقيد مكاني", "تعقيد منطقي", "تعقيد عشوائي"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Space Complexity؟", options: ["تعقيد مكاني", "تعقيد زمني", "تعقيد منطقي", "تعقيد عشوائي"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Best Case؟", options: ["أفضل حالة", "أسوأ حالة", "حالة متوسطة", "حالة عشوائية"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Worst Case؟", options: ["أسوأ حالة", "أفضل حالة", "حالة متوسطة", "حالة عشوائية"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Average Case؟", options: ["حالة متوسطة", "أفضل حالة", "أسوأ حالة", "حالة عشوائية"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Asymptotic Analysis؟", options: ["تحليل تقاربي", "تحليل دقيق", "تحليل عشوائي", "تحليل ثابت"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Stable Sort؟", options: ["فرز مستقر", "فرز غير مستقر", "فرز سريع", "فرز بطيء"], correctAnswer: 0, level: 3 },
+
+        // أنظمة التشغيل (25 سؤال)
+        { question: "ما هو Operating System؟", options: ["نظام تشغيل", "برنامج تطبيقي", "قاعدة بيانات", "متصفح"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Kernel؟", options: ["نواة النظام", "واجهة المستخدم", "برنامج تطبيقي", "متصفح"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Process؟", options: ["عملية قيد التنفيذ", "برنامج مخزن", "ملف نصي", "قاعدة بيانات"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Thread؟", options: ["خيط تنفيذ", "عملية كاملة", "برنامج", "ملف"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Multitasking؟", options: ["تعدد المهام", "مهمة واحدة", "لا مهام", "مهمتان فقط"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Multithreading؟", options: ["تعدد الخيوط", "خيط واحد", "لا خيوط", "خيطان فقط"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Context Switching؟", options: ["تبديل السياق", "حفظ السياق", "حذف السياق", "إنشاء سياق"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Scheduler؟", options: ["مجدول العمليات", "منفذ العمليات", "محذف العمليات", "منشئ العمليات"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Deadlock؟", options: ["حالة جمود", "حالة تنفيذ", "حالة انتظار", "حالة إيقاف"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Race Condition؟", options: ["حالة سباق", "حالة جمود", "حالة انتظار", "حالة تنفيذ"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Semaphore؟", options: ["إشارة المرور", "قفل", "متغير", "دالة"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Mutex؟", options: ["استبعاد متبادل", "إشارة مرور", "متغير", "دالة"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Virtual Memory؟", options: ["ذاكرة افتراضية", "ذاكرة حقيقية", "ذاكرة فيزيائية", "ذاكرة ثابتة"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Paging؟", options: ["تقسيم الذاكرة لصفحات", "تقسيم القرص", "تقسيم المعالج", "تقسيم الشاشة"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Segmentation؟", options: ["تقسيم الذاكرة لقطع", "تقسيم القرص", "تقسيم المعالج", "تقسيم الشاشة"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Page Fault؟", options: ["خطأ صفحة", "نجاح صفحة", "إنشاء صفحة", "حذف صفحة"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Thrashing؟", options: ["الخفقان", "الاستقرار", "السرعة", "البطء"], correctAnswer: 0, level: 3 },
+        { question: "ما هو File System؟", options: ["نظام الملفات", "نظام التشغيل", "نظام الذاكرة", "نظام المعالج"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Directory؟", options: ["دليل الملفات", "ملف", "برنامج", "عملية"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Path؟", options: ["مسار الملف", "اسم الملف", "حجم الملف", "نوع الملف"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Interrupt؟", options: ["مقاطعة", "استمرار", "توقف", "بداية"], correctAnswer: 0, level: 3 },
+        { question: "ما هو System Call؟", options: ["استدعاء نظام", "استدعاء دالة", "استدعاء برنامج", "استدعاء ملف"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Booting؟", options: ["إقلاع النظام", "إيقاف النظام", "تشغيل برنامج", "إغلاق برنامج"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Shell؟", options: ["واجهة سطر الأوامر", "واجهة رسومية", "نواة النظام", "برنامج تطبيقي"], correctAnswer: 0, level: 3 },
+        { question: "ما هو Daemon؟", options: ["عملية خلفية", "عملية أمامية", "برنامج عادي", "ملف نصي"], correctAnswer: 0, level: 3 },
+
+        // ==========================================
+        // المستوى 4: صعب (100 سؤال)
+        // الذكاء الاصطناعي (25) + الحوسبة السحابية (25) + Big Data (25) + DevOps (25)
+        // ==========================================
+
+        // الذكاء الاصطناعي (25 سؤال)
+        { question: "ما هو Artificial Intelligence؟", options: ["ذكاء اصطناعي", "ذكاء طبيعي", "ذكاء بشري", "ذكاء حيواني"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Machine Learning؟", options: ["تعلم آلي", "تعلم بشري", "تعلم طبيعي", "تعلم حيواني"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Deep Learning؟", options: ["تعلم عميق", "تعلم سطحي", "تعلم متوسط", "تعلم بسيط"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Neural Network؟", options: ["شبكة عصبية", "شبكة حاسوبية", "شبكة اجتماعية", "شبكة كهربائية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Supervised Learning؟", options: ["تعلم مُشرف عليه", "تعلم غير مُشرف", "تعلم تعزيزي", "تعلم نصف مُشرف"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Unsupervised Learning؟", options: ["تعلم غير مُشرف عليه", "تعلم مُشرف", "تعلم تعزيزي", "تعلم نصف مُشرف"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Reinforcement Learning؟", options: ["تعلم تعزيزي", "تعلم مُشرف", "تعلم غير مُشرف", "تعلم نصف مُشرف"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Natural Language Processing؟", options: ["معالجة اللغة الطبيعية", "معالجة اللغة الاصطناعية", "معالجة اللغة الآلية", "معالجة اللغة الرقمية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Computer Vision؟", options: ["رؤية حاسوبية", "رؤية بشرية", "رؤية حيوانية", "رؤية آلية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Expert System؟", options: ["نظام خبير", "نظام مبتدئ", "نظام متوسط", "نظام عادي"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Fuzzy Logic؟", options: ["منطق ضبابي", "منطق واضح", "منطق ثنائي", "منطق رقمي"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Genetic Algorithm؟", options: ["خوارزمية جينية", "خوارزمية تقليدية", "خوارزمية رياضية", "خوارزمية منطقية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Activation Function؟", options: ["دالة تنشيط", "دالة تثبيط", "دالة خطية", "دالة ثابتة"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Backpropagation؟", options: ["الانتشار العكسي", "الانتشار الأمامي", "الانتشار الجانبي", "الانتشار الثابت"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Overfitting؟", options: ["فرط التخصيص", "نقص التخصيص", "تخصيص معتدل", "لا تخصيص"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Underfitting؟", options: ["نقص التخصيص", "فرط التخصيص", "تخصيص معتدل", "لا تخصيص"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Training Data؟", options: ["بيانات تدريب", "بيانات اختبار", "بيانات تحقق", "بيانات إنتاج"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Test Data؟", options: ["بيانات اختبار", "بيانات تدريب", "بيانات تحقق", "بيانات إنتاج"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Validation Data؟", options: ["بيانات تحقق", "بيانات تدريب", "بيانات اختبار", "بيانات إنتاج"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Feature Engineering؟", options: ["هندسة الميزات", "هندسة البيانات", "هندسة النماذج", "هندسة الخوارزميات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Classification؟", options: ["تصنيف", "انحدار", "تجميع", "تقليل الأبعاد"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Regression؟", options: ["انحدار", "تصنيف", "تجميع", "تقليل الأبعاد"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Clustering؟", options: ["تجميع", "تصنيف", "انحدار", "تقليل الأبعاد"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Confusion Matrix؟", options: ["مصفوفة الارتباك", "مصفوفة الوضوح", "مصفوفة الدقة", "مصفوفة الأداء"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Precision؟", options: ["الدقة", "الاستدعاء", "الصحة", "الخطأ"], correctAnswer: 0, level: 4 },
+
+        // الحوسبة السحابية (25 سؤال)
+        { question: "ما هو Cloud Computing؟", options: ["حوسبة سحابية", "حوسبة محلية", "حوسبة موزعة", "حوسبة متوازية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو IaaS؟", options: ["Infrastructure as a Service", "Internet as a Service", "Information as a Service", "Integration as a Service"], correctAnswer: 0, level: 4 },
+        { question: "ما هو PaaS؟", options: ["Platform as a Service", "Programming as a Service", "Product as a Service", "Process as a Service"], correctAnswer: 0, level: 4 },
+        { question: "ما هو SaaS؟", options: ["Software as a Service", "Storage as a Service", "Security as a Service", "System as a Service"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Public Cloud؟", options: ["سحابة عامة", "سحابة خاصة", "سحابة هجينة", "سحابة محلية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Private Cloud؟", options: ["سحابة خاصة", "سحابة عامة", "سحابة هجينة", "سحابة محلية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Hybrid Cloud؟", options: ["سحابة هجينة", "سحابة عامة", "سحابة خاصة", "سحابة محلية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو AWS؟", options: ["Amazon Web Services", "Advanced Web Services", "Automatic Web Services", "Application Web Services"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Azure؟", options: ["منصة سحابية من Microsoft", "منصة سحابية من Google", "منصة سحابية من Amazon", "منصة سحابية من IBM"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Google Cloud Platform؟", options: ["منصة سحابية من Google", "منصة سحابية من Microsoft", "منصة سحابية من Amazon", "منصة سحابية من IBM"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Virtual Machine؟", options: ["آلة افتراضية", "آلة حقيقية", "آلة فيزيائية", "آلة ثابتة"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Container؟", options: ["حاوية", "آلة افتراضية", "خادم", "قاعدة بيانات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Docker؟", options: ["منصة حاويات", "آلة افتراضية", "نظام تشغيل", "قاعدة بيانات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Kubernetes؟", options: ["نظام لإدارة الحاويات", "نظام تشغيل", "قاعدة بيانات", "خادم ويب"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Load Balancer؟", options: ["موازن الحمل", "خادم", "قاعدة بيانات", "جدار ناري"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Auto Scaling؟", options: ["تحجيم تلقائي", "تحجيم يدوي", "تحجيم ثابت", "لا تحجيم"], correctAnswer: 0, level: 4 },
+        { question: "ما هو CDN؟", options: ["Content Delivery Network", "Cloud Data Network", "Computer Delivery Network", "Central Data Network"], correctAnswer: 0, level: 4 },
+        { question: "ما هو S3؟", options: ["خدمة تخزين من AWS", "خدمة حوسبة", "خدمة شبكات", "خدمة قواعد بيانات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو EC2؟", options: ["خدمة حوسبة من AWS", "خدمة تخزين", "خدمة شبكات", "خدمة قواعد بيانات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Lambda؟", options: ["حوسبة بلا خادم", "خادم افتراضي", "خادم فيزيائي", "قاعدة بيانات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Serverless؟", options: ["بلا خادم", "بخادم", "خادم افتراضي", "خادم فيزيائي"], correctAnswer: 0, level: 4 },
+        { question: "ما هو RDS؟", options: ["خدمة قواعد بيانات علائقية", "خدمة تخزين", "خدمة حوسبة", "خدمة شبكات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو DynamoDB؟", options: ["قاعدة بيانات NoSQL", "قاعدة بيانات SQL", "خدمة تخزين", "خدمة حوسبة"], correctAnswer: 0, level: 4 },
+        { question: "ما هو VPC؟", options: ["Virtual Private Cloud", "Virtual Public Cloud", "Visual Private Cloud", "Virtual Process Cloud"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Region؟", options: ["منطقة جغرافية", "مركز بيانات", "خادم", "حاوية"], correctAnswer: 0, level: 4 },
+
+        // Big Data (25 سؤال)
+        { question: "ما هو Big Data؟", options: ["بيانات ضخمة", "بيانات صغيرة", "بيانات متوسطة", "بيانات عادية"], correctAnswer: 0, level: 4 },
+        { question: "ما هي 3Vs للبيانات الضخمة؟", options: ["Volume, Velocity, Variety", "Value, Version, Validation", "Virtual, Visual, Variable", "Vector, Variance, Vertex"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Hadoop؟", options: ["إطار عمل للبيانات الضخمة", "قاعدة بيانات", "لغة برمجة", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو HDFS؟", options: ["Hadoop Distributed File System", "High Data File System", "Hybrid Data File System", "Heavy Data File System"], correctAnswer: 0, level: 4 },
+        { question: "ما هو MapReduce؟", options: ["نموذج برمجة للمعالجة", "قاعدة بيانات", "لغة برمجة", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Spark؟", options: ["محرك معالجة بيانات", "قاعدة بيانات", "لغة برمجة", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو NoSQL؟", options: ["قواعد بيانات غير علائقية", "قواعد بيانات علائقية", "لغة استعلام", "نظام ملفات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو MongoDB؟", options: ["قاعدة بيانات NoSQL", "قاعدة بيانات SQL", "خادم ويب", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Cassandra؟", options: ["قاعدة بيانات موزعة", "قاعدة بيانات مركزية", "خادم ويب", "نظام ملفات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Redis؟", options: ["قاعدة بيانات في الذاكرة", "قاعدة بيانات على القرص", "خادم ويب", "نظام ملفات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Data Lake؟", options: ["بحيرة بيانات", "مستودع بيانات", "قاعدة بيانات", "نظام ملفات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Data Warehouse؟", options: ["مستودع بيانات", "بحيرة بيانات", "قاعدة بيانات", "نظام ملفات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو ETL؟", options: ["Extract, Transform, Load", "Edit, Test, Launch", "Execute, Transfer, Link", "Evaluate, Track, List"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Data Mining؟", options: ["حذف البيانات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Hive؟", options: ["مستودع بيانات على Hadoop", "قاعدة بيانات", "لغة برمجة", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Pig؟", options: ["لغة لتحليل البيانات", "قاعدة بيانات", "نظام تشغيل", "خادم ويب"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Kafka؟", options: ["منصة بث البيانات", "قاعدة بيانات", "خادم ويب", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Stream Processing؟", options: ["معالجة البيانات الجارية", "معالجة البيانات الثابتة", "تخزين البيانات", "حذف البيانات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Batch Processing؟", options: ["معالجة دفعية", "معالجة فورية", "معالجة جارية", "معالجة عشوائية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Structured Data؟", options: ["بيانات منظمة", "بيانات غير منظمة", "بيانات نصف منظمة", "بيانات عشوائية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Unstructured Data؟", options: ["بيانات غير منظمة", "بيانات منظمة", "بيانات نصف منظمة", "بيانات مرتبة"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Semi-Structured Data؟", options: ["بيانات نصف منظمة", "بيانات منظمة", "بيانات غير منظمة", "بيانات مرتبة"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Data Partitioning؟", options: ["تقسيم البيانات", "دمج البيانات", "حذف البيانات", "نسخ البيانات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Data Replication؟", options: ["نسخ البيانات", "حذف البيانات", "تقسيم البيانات", "دمج البيانات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Sharding؟", options: ["تجزئة قاعدة البيانات", "نسخ قاعدة البيانات", "حذف قاعدة البيانات", "دمج قاعدة البيانات"], correctAnswer: 0, level: 4 },
+
+        // DevOps (25 سؤال)
+        { question: "ما هو DevOps؟", options: ["التطوير والعمليات", "التطوير فقط", "العمليات فقط", "الاختبار فقط"], correctAnswer: 0, level: 4 },
+        { question: "ما هو CI/CD؟", options: ["التكامل والنشر المستمر", "التطوير المستمر", "الاختبار المستمر", "المراقبة المستمرة"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Jenkins؟", options: ["أداة تكامل مستمر", "قاعدة بيانات", "خادم ويب", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Git؟", options: ["نظام تحكم بالإصدارات", "قاعدة بيانات", "خادم ويب", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو GitHub؟", options: ["منصة استضافة Git", "قاعدة بيانات", "خادم ويب", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو GitLab؟", options: ["منصة DevOps متكاملة", "قاعدة بيانات فقط", "خادم ويب فقط", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Docker؟", options: ["منصة حاويات", "آلة افتراضية", "نظام تشغيل", "قاعدة بيانات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Kubernetes؟", options: ["نظام إدارة الحاويات", "نظام تشغيل", "قاعدة بيانات", "خادم ويب"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Ansible؟", options: ["أداة أتمتة", "قاعدة بيانات", "خادم ويب", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Terraform؟", options: ["أداة إدارة البنية التحتية", "قاعدة بيانات", "خادم ويب", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Infrastructure as Code؟", options: ["البنية التحتية كشيفرة", "البنية التحتية اليدوية", "البنية التحتية الفيزيائية", "البنية التحتية الثابتة"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Monitoring؟", options: ["المراقبة", "التطوير", "الاختبار", "النشر"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Prometheus؟", options: ["نظام مراقبة", "قاعدة بيانات", "خادم ويب", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Grafana؟", options: ["أداة تصور البيانات", "قاعدة بيانات", "خادم ويب", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Logging؟", options: ["تسجيل الأحداث", "حذف الأحداث", "تشفير الأحداث", "ضغط الأحداث"], correctAnswer: 0, level: 4 },
+        { question: "ما هو ELK Stack؟", options: ["Elasticsearch, Logstash, Kibana", "Error, Log, Key", "Execute, Load, Kill", "Extract, Link, Keep"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Blue-Green Deployment؟", options: ["نشر أزرق-أخضر", "نشر عادي", "نشر متدرج", "نشر ثابت"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Canary Deployment؟", options: ["نشر كناري", "نشر كامل", "نشر متدرج", "نشر ثابت"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Rolling Deployment؟", options: ["نشر متدرج", "نشر كامل", "نشر كناري", "نشر ثابت"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Microservices؟", options: ["خدمات مصغرة", "خدمات كبيرة", "خدمة واحدة", "لا خدمات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Monolithic Architecture؟", options: ["معمارية أحادية", "معمارية مصغرة", "معمارية موزعة", "معمارية هجينة"], correctAnswer: 0, level: 4 },
+        { question: "ما هو API Gateway؟", options: ["بوابة واجهات برمجية", "قاعدة بيانات", "خادم ويب", "نظام تشغيل"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Service Mesh؟", options: ["شبكة خدمات", "شبكة محلية", "شبكة واسعة", "شبكة افتراضية"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Container Orchestration؟", options: ["تنسيق الحاويات", "إنشاء الحاويات", "حذف الحاويات", "نسخ الحاويات"], correctAnswer: 0, level: 4 },
+        { question: "ما هو Continuous Testing؟", options: ["اختبار مستمر", "اختبار يدوي", "اختبار نهائي", "اختبار أولي"], correctAnswer: 0, level: 4 },
+
+        // ==========================================
+        // المستوى 5: صعب جداً (100 سؤال)
+        // Machine Learning (25) + Blockchain (25) + Cybersecurity المتقدم (25) + Software Architecture (25)
+        // ==========================================
+
+        // Machine Learning (25 سؤال)
+        { question: "ما هو Convolutional Neural Network؟", options: ["شبكة عصبية التفافية", "شبكة عصبية عادية", "شبكة عصبية دورية", "شبكة عصبية بسيطة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Recurrent Neural Network؟", options: ["شبكة عصبية متكررة", "شبكة عصبية التفافية", "شبكة عصبية عادية", "شبكة عصبية بسيطة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو LSTM؟", options: ["Long Short-Term Memory", "Long Standard Time Memory", "Large Short-Term Memory", "Limited Short-Term Memory"], correctAnswer: 0, level: 5 },
+        { question: "ما هو GAN؟", options: ["Generative Adversarial Network", "General Artificial Network", "Global Adaptive Network", "Guided Automatic Network"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Transfer Learning؟", options: ["تعلم منقول", "تعلم عادي", "تعلم مباشر", "تعلم بسيط"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Gradient Descent؟", options: ["انحدار التدرج", "صعود التدرج", "ثبات التدرج", "تذبذب التدرج"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Stochastic Gradient Descent؟", options: ["انحدار تدرج عشوائي", "انحدار تدرج ثابت", "انحدار تدرج كامل", "انحدار تدرج جزئي"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Batch Gradient Descent؟", options: ["انحدار تدرج دفعي", "انحدار تدرج عشوائي", "انحدار تدرج صغير", "انحدار تدرج كبير"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Learning Rate؟", options: ["معدل التعلم", "معدل الخطأ", "معدل الدقة", "معدل السرعة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Epoch؟", options: ["دورة تدريب كاملة", "نصف دورة", "ربع دورة", "دورتان"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Batch Size؟", options: ["حجم الدفعة", "حجم البيانات", "حجم النموذج", "حجم الشبكة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Dropout؟", options: ["تقنية لمنع فرط التخصيص", "تقنية للتسريع", "تقنية للدقة", "تقنية للتخزين"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Batch Normalization؟", options: ["تطبيع الدفعة", "تطبيع البيانات", "تطبيع النموذج", "تطبيع الشبكة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Cross-Validation؟", options: ["التحقق المتقاطع", "التحقق العادي", "التحقق البسيط", "التحقق الكامل"], correctAnswer: 0, level: 5 },
+        { question: "ما هو K-Fold Cross-Validation؟", options: ["تحقق متقاطع K-طيات", "تحقق عادي", "تحقق بسيط", "تحقق كامل"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Hyperparameter Tuning؟", options: ["ضبط المعاملات الفائقة", "ضبط المعاملات العادية", "ضبط البيانات", "ضبط النموذج"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Grid Search؟", options: ["بحث شبكي", "بحث عشوائي", "بحث خطي", "بحث دائري"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Random Search؟", options: ["بحث عشوائي", "بحث شبكي", "بحث خطي", "بحث دائري"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Ensemble Learning؟", options: ["تعلم جماعي", "تعلم فردي", "تعلم بسيط", "تعلم مباشر"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Bagging؟", options: ["Bootstrap Aggregating", "Basic Aggregating", "Batch Aggregating", "Best Aggregating"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Boosting؟", options: ["تعزيز النماذج الضعيفة", "تضعيف النماذج", "تثبيت النماذج", "حذف النماذج"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Random Forest؟", options: ["غابة عشوائية", "شجرة واحدة", "شجرتان", "غابة مرتبة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو XGBoost؟", options: ["Extreme Gradient Boosting", "eXtra Gradient Boosting", "eXtended Gradient Boosting", "eXcellent Gradient Boosting"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Feature Selection؟", options: ["اختيار الميزات", "حذف الميزات", "إضافة ميزات", "تعديل الميزات"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Dimensionality Reduction؟", options: ["تقليل الأبعاد", "زيادة الأبعاد", "ثبات الأبعاد", "حذف الأبعاد"], correctAnswer: 0, level: 5 },
+
+        // Blockchain (25 سؤال)
+        { question: "ما هو Blockchain؟", options: ["سلسلة كتل", "قاعدة بيانات عادية", "خادم مركزي", "نظام ملفات"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Block؟", options: ["كتلة تحتوي معاملات", "معاملة واحدة", "خادم", "قاعدة بيانات"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Hash في Blockchain؟", options: ["بصمة رقمية للكتلة", "رقم الكتلة", "حجم الكتلة", "وقت الكتلة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Mining؟", options: ["تعدين الكتل", "حذف الكتل", "نسخ الكتل", "قراءة الكتل"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Proof of Work؟", options: ["إثبات العمل", "إثبات الحصة", "إثبات الملكية", "إثبات الوقت"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Proof of Stake؟", options: ["إثبات الحصة", "إثبات العمل", "إثبات الملكية", "إثبات الوقت"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Smart Contract؟", options: ["عقد ذكي", "عقد ورقي", "عقد شفهي", "عقد بسيط"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Ethereum؟", options: ["منصة عقود ذكية", "عملة رقمية فقط", "قاعدة بيانات", "خادم"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Bitcoin؟", options: ["عملة رقمية", "عقد ذكي", "قاعدة بيانات", "خادم"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Cryptocurrency؟", options: ["عملة مشفرة", "عملة ورقية", "عملة معدنية", "عملة إلكترونية"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Wallet؟", options: ["محفظة رقمية", "محفظة ورقية", "محفظة جلدية", "محفظة بلاستيكية"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Public Key؟", options: ["مفتاح عام", "مفتاح خاص", "مفتاح مشترك", "مفتاح سري"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Private Key؟", options: ["مفتاح خاص", "مفتاح عام", "مفتاح مشترك", "مفتاح سري"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Node في Blockchain؟", options: ["عقدة في الشبكة", "كتلة", "معاملة", "عقد ذكي"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Distributed Ledger؟", options: ["دفتر أستاذ موزع", "دفتر أستاذ مركزي", "دفتر أستاذ ورقي", "دفتر أستاذ إلكتروني"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Consensus Mechanism؟", options: ["آلية إجماع", "آلية فردية", "آلية عشوائية", "آلية ثابتة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Fork؟", options: ["انقسام السلسلة", "دمج السلسلة", "حذف السلسلة", "نسخ السلسلة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Hard Fork؟", options: ["انقسام صارم", "انقسام لين", "دمج", "نسخ"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Soft Fork؟", options: ["انقسام لين", "انقسام صارم", "دمج", "نسخ"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Gas في Ethereum؟", options: ["رسوم المعاملات", "وقود حقيقي", "عملة", "رمز"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Token؟", options: ["رمز رقمي", "عملة ورقية", "قطعة نقدية", "شهادة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو NFT؟", options: ["Non-Fungible Token", "New Financial Token", "Network File Token", "Node Function Token"], correctAnswer: 0, level: 5 },
+        { question: "ما هو DeFi؟", options: ["Decentralized Finance", "Digital Finance", "Direct Finance", "Distributed Finance"], correctAnswer: 0, level: 5 },
+        { question: "ما هو DAO؟", options: ["Decentralized Autonomous Organization", "Digital Automatic Organization", "Direct Access Organization", "Data Analysis Organization"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Immutability؟", options: ["عدم القابلية للتغيير", "القابلية للتغيير", "المرونة", "الثبات"], correctAnswer: 0, level: 5 },
+
+        // Cybersecurity المتقدم (25 سؤال)
+        { question: "ما هو Penetration Testing؟", options: ["اختبار الاختراق", "اختبار الأداء", "اختبار الوظائف", "اختبار الواجهة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Vulnerability Assessment؟", options: ["تقييم الثغرات", "إصلاح الثغرات", "إخفاء الثغرات", "تجاهل الثغرات"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Zero-Day Exploit؟", options: ["استغلال اليوم صفر", "استغلال قديم", "استغلال معروف", "استغلال مُصلح"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Buffer Overflow؟", options: ["تجاوز سعة المخزن المؤقت", "نقص المخزن", "ثبات المخزن", "حذف المخزن"], correctAnswer: 0, level: 5 },
+        { question: "ما هو SQL Injection؟", options: ["حقن SQL خبيث", "استعلام SQL عادي", "تحديث SQL", "حذف SQL"], correctAnswer: 0, level: 5 },
+        { question: "ما هو XSS Attack؟", options: ["هجوم برمجة نصية عبر المواقع", "هجوم حرمان الخدمة", "هجوم التصيد", "هجوم الفيروسات"], correctAnswer: 0, level: 5 },
+        { question: "ما هو CSRF Attack؟", options: ["تزوير طلب عبر المواقع", "حقن SQL", "برمجة نصية", "حرمان الخدمة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Man-in-the-Middle Attack؟", options: ["هجوم الرجل في الوسط", "هجوم مباشر", "هجوم غير مباشر", "هجوم جانبي"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Brute Force Attack؟", options: ["هجوم القوة الغاشمة", "هجوم ذكي", "هجوم مخطط", "هجوم سريع"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Dictionary Attack؟", options: ["هجوم القاموس", "هجوم عشوائي", "هجوم مباشر", "هجوم سريع"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Rainbow Table؟", options: ["جدول قوس قزح", "جدول عادي", "جدول بسيط", "جدول معقد"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Salt في التشفير؟", options: ["قيمة عشوائية للتشفير", "قيمة ثابتة", "قيمة معروفة", "قيمة بسيطة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Honeypot؟", options: ["فخ للمخترقين", "جدار ناري", "برنامج حماية", "نظام كشف"], correctAnswer: 0, level: 5 },
+        { question: "ما هو IDS؟", options: ["Intrusion Detection System", "Internet Data System", "Internal Defense System", "Interactive Database System"], correctAnswer: 0, level: 5 },
+        { question: "ما هو IPS؟", options: ["Intrusion Prevention System", "Internet Protection System", "Internal Privacy System", "Interactive Process System"], correctAnswer: 0, level: 5 },
+        { question: "ما هو SIEM؟", options: ["Security Information and Event Management", "System Integration and Event Monitoring", "Software Installation and Error Management", "Service Implementation and Execution Model"], correctAnswer: 0, level: 5 },
+        { question: "ما هو APT؟", options: ["Advanced Persistent Threat", "Automatic Protection Tool", "Active Prevention Technology", "Application Performance Test"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Rootkit؟", options: ["برمجية خبيثة متخفية", "أداة إدارة", "نظام حماية", "برنامج تشخيص"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Ransomware؟", options: ["برمجية فدية", "برمجية مجانية", "برمجية حماية", "برمجية مفيدة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Spyware؟", options: ["برمجية تجسس", "برمجية حماية", "برمجية نظافة", "برمجية تسريع"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Adware؟", options: ["برمجية إعلانية", "برمجية حماية", "برمجية نظافة", "برمجية تسريع"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Botnet؟", options: ["شبكة أجهزة مخترقة", "شبكة محمية", "شبكة عادية", "شبكة سريعة"], correctAnswer: 0, level: 5 },
+        { question: "ما هو DDoS Mitigation؟", options: ["تخفيف هجوم DDoS", "تنفيذ هجوم DDoS", "تسريع هجوم DDoS", "تجاهل هجوم DDoS"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Security Audit؟", options: ["تدقيق أمني", "تدقيق مالي", "تدقيق إداري", "تدقيق فني"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Incident Response؟", options: ["الاستجابة للحوادث", "منع الحوادث", "تجاهل الحوادث", "إخفاء الحوادث"], correctAnswer: 0, level: 5 },
+
+        // Software Architecture (25 سؤال)
+        { question: "ما هو Design Pattern؟", options: ["نمط تصميم", "نمط برمجة", "نمط اختبار", "نمط نشر"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Singleton Pattern؟", options: ["نمط الكائن الوحيد", "نمط الكائنات المتعددة", "نمط المصنع", "نمط المراقب"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Factory Pattern؟", options: ["نمط المصنع", "نمط الكائن الوحيد", "نمط المراقب", "نمط الاستراتيجية"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Observer Pattern؟", options: ["نمط المراقب", "نمط المصنع", "نمط الكائن الوحيد", "نمط الاستراتيجية"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Strategy Pattern؟", options: ["نمط الاستراتيجية", "نمط المصنع", "نمط المراقب", "نمط الكائن الوحيد"], correctAnswer: 0, level: 5 },
+        { question: "ما هو MVC؟", options: ["Model-View-Controller", "Model-Visual-Component", "Module-View-Control", "Method-Variable-Class"], correctAnswer: 0, level: 5 },
+        { question: "ما هو MVVM؟", options: ["Model-View-ViewModel", "Model-Visual-View-Module", "Method-Variable-View-Model", "Module-View-Visual-Method"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Layered Architecture؟", options: ["معمارية طبقية", "معمارية مسطحة", "معمارية عشوائية", "معمارية دائرية"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Clean Architecture؟", options: ["معمارية نظيفة", "معمارية معقدة", "معمارية بسيطة", "معمارية عشوائية"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Hexagonal Architecture؟", options: ["معمارية سداسية", "معمارية مربعة", "معمارية دائرية", "معمارية مثلثية"], correctAnswer: 0, level: 5 },
+        { question: "ما هو SOLID Principles؟", options: ["مبادئ تصميم كائني", "مبادئ برمجة", "مبادئ اختبار", "مبادئ نشر"], correctAnswer: 0, level: 5 },
+        { question: "ما معنى S في SOLID؟", options: ["Single Responsibility", "System Response", "Software Release", "Security Rule"], correctAnswer: 0, level: 5 },
+        { question: "ما معنى O في SOLID؟", options: ["Open/Closed", "Object Oriented", "Output Optimization", "Operating Order"], correctAnswer: 0, level: 5 },
+        { question: "ما معنى L في SOLID؟", options: ["Liskov Substitution", "Layer Loading", "Logic Linking", "Linear List"], correctAnswer: 0, level: 5 },
+        { question: "ما معنى I في SOLID؟", options: ["Interface Segregation", "Input Integration", "Information Isolation", "Implementation Inheritance"], correctAnswer: 0, level: 5 },
+        { question: "ما معنى D في SOLID؟", options: ["Dependency Inversion", "Data Definition", "Dynamic Dispatching", "Development Deployment"], correctAnswer: 0, level: 5 },
+        { question: "ما هو DRY Principle؟", options: ["Don't Repeat Yourself", "Do Repeat Yesterday", "Data Read Yearly", "Debug Run Yesterday"], correctAnswer: 0, level: 5 },
+        { question: "ما هو KISS Principle؟", options: ["Keep It Simple, Stupid", "Keep Iteration Short System", "Key Information Storage System", "Kernel Input Simple Structure"], correctAnswer: 0, level: 5 },
+        { question: "ما هو YAGNI Principle؟", options: ["You Aren't Gonna Need It", "You Always Generate New Ideas", "Yesterday Actions Generate New Issues", "Year Ago Generated New Implementation"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Coupling؟", options: ["الاقتران بين المكونات", "الفصل بين المكونات", "دمج المكونات", "حذف المكونات"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Cohesion؟", options: ["التماسك الداخلي", "التفكك الداخلي", "الاقتران الخارجي", "الفصل الخارجي"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Loose Coupling؟", options: ["اقتران ضعيف", "اقتران قوي", "اقتران متوسط", "لا اقتران"], correctAnswer: 0, level: 5 },
+        { question: "ما هو High Cohesion؟", options: ["تماسك عالي", "تماسك ضعيف", "تماسك متوسط", "لا تماسك"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Refactoring؟", options: ["إعادة هيكلة الكود", "كتابة كود جديد", "حذف الكود", "نسخ الكود"], correctAnswer: 0, level: 5 },
+        { question: "ما هو Technical Debt؟", options: ["دين تقني", "دين مالي", "دين إداري", "دين شخصي"], correctAnswer: 0, level: 5 }
+    ],
+
+    encouragements: {
+        correct: [
+            "ممتاز! 🎉",
+            "رائع جداً! 🌟",
+            "إجابة صحيحة! 👏",
+            "أحسنت! 💪",
+            "مذهل! 🔥"
+        ],
+        streak: [
+            "أنت في نار مشتعلة! 🔥🔥",
+            "لا يمكن إيقافك! 🚀",
+            "سلسلة رائعة! ⭐⭐⭐",
+            "أداء استثنائي! 🏆"
+        ]
+    },
+
+    init() {
+        console.log('🎮 تهيئة اللعبة...');
+        this.setupDOMReferences();
+        this.setupEventListeners();
+        this.prepareQuestions();
+        this.createParticles();
+        console.log('✅ اكتملت تهيئة اللعبة بنجاح');
+    },
+
+    createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+    },
+
+    setupDOMReferences() {
+        try {
+            this.elements = {
+                welcomeScreen: document.getElementById('welcomeScreen'),
+                gameScreen: document.getElementById('gameScreen'),
+                gameOverScreen: document.getElementById('gameOverScreen'),
+                questionNumber: document.getElementById('questionNumber'),
+                currentPrize: document.getElementById('currentPrize'),
+                scoreDisplay: document.getElementById('score'),
+                questionText: document.getElementById('questionText'),
+                optionsContainer: document.getElementById('optionsContainer'),
+                startButton: document.getElementById('startButton'),
+                nextButton: document.getElementById('nextButton'),
+                restartButton: document.getElementById('restartButton'),
+                gameOverTitle: document.getElementById('gameOverTitle'),
+                finalScore: document.getElementById('finalScore'),
+                gameOverMessage: document.getElementById('gameOverMessage'),
+                timer: document.getElementById('timer'),
+                progressFill: document.getElementById('progressFill'),
+                levelIndicator: document.getElementById('levelIndicator'),
+                levelBadge: document.getElementById('levelBadge'),
+                encouragement: document.getElementById('encouragement'),
+                gameStats: document.getElementById('gameStats'),
+                fiftyFifty: document.getElementById('fiftyFifty'),
+                skipQuestion: document.getElementById('skipQuestion'),
+                extraTime: document.getElementById('extraTime')
+            };
+
+            for (const [key, element] of Object.entries(this.elements)) {
+                if (!element) {
+                    throw new Error(`العنصر ${key} غير موجود في DOM`);
+                }
+            }
+
+            console.log('✅ تم تحميل جميع عناصر DOM بنجاح');
+        } catch (error) {
+            console.error('❌ خطأ في تحميل عناصر DOM:', error);
+        }
+    },
+
+    setupEventListeners() {
+        this.elements.startButton.addEventListener('click', () => this.startGame());
+        this.elements.nextButton.addEventListener('click', () => this.nextQuestion());
+        this.elements.restartButton.addEventListener('click', () => this.restartGame());
+        this.elements.fiftyFifty.addEventListener('click', () => this.useFiftyFifty());
+        this.elements.skipQuestion.addEventListener('click', () => this.useSkipQuestion());
+        this.elements.extraTime.addEventListener('click', () => this.useExtraTime());
+    },
+
+    prepareQuestions() {
+        this.questions = this.questions.sort(() => Math.random() - 0.5);
+        console.log(`✅ تم تجهيز ${this.questions.length} سؤال`);
+    },
+
+    startGame() {
+        console.log('🎮 بدء اللعبة الجديدة...');
+
+        this.state = {
+            currentQuestionIndex: 0,
+            score: 0,
+            currentPrize: 0,
+            isGameActive: true,
+            answeredQuestions: [],
+            timeRemaining: this.config.timePerQuestion,
+            timerInterval: null,
+            lifelines: {
+                fiftyFifty: true,
+                skipQuestion: true,
+                extraTime: true
+            },
+            startTime: Date.now(),
+            correctAnswersStreak: 0
+        };
+
+        this.elements.fiftyFifty.classList.remove('used');
+        this.elements.skipQuestion.classList.remove('used');
+        this.elements.extraTime.classList.remove('used');
+
+        this.showScreen('game');
+        this.elements.levelIndicator.style.display = 'flex';
+        this.displayQuestion();
+    },
+
+    startTimer() {
+        this.stopTimer();
+        this.state.timeRemaining = this.config.timePerQuestion;
+        this.updateTimerDisplay();
+
+        this.state.timerInterval = setInterval(() => {
+            this.state.timeRemaining--;
+            this.updateTimerDisplay();
+
+            if (this.state.timeRemaining <= 0) {
+                this.stopTimer();
+                this.handleTimeout();
+            }
+        }, 1000);
+    },
+
+    stopTimer() {
+        if (this.state.timerInterval) {
+            clearInterval(this.state.timerInterval);
+            this.state.timerInterval = null;
+        }
+    },
+
+    updateTimerDisplay() {
+        this.elements.timer.textContent = this.state.timeRemaining;
+
+        if (this.state.timeRemaining <= 10) {
+            this.elements.timer.classList.add('warning');
+        } else {
+            this.elements.timer.classList.remove('warning');
+        }
+    },
+
+    handleTimeout() {
+        console.log('⏰ انتهى الوقت!');
+        this.showEncouragement('⏰ انتهى الوقت!');
+
+        const allOptions = this.elements.optionsContainer.querySelectorAll('.option');
+        allOptions.forEach(opt => opt.classList.add('disabled'));
+
+        const question = this.getCurrentQuestion();
+        allOptions[question.correctAnswer].classList.add('correct');
+
+        setTimeout(() => {
+            this.endGame(false);
+        }, 2000);
+    },
+
+    displayQuestion() {
+        const question = this.getCurrentQuestion();
+
+        if (!question) {
+            console.error('❌ لا يوجد سؤال للعرض');
+            this.endGame(false);
+            return;
+        }
+
+        console.log(`📝 عرض السؤال ${this.state.currentQuestionIndex + 1}`);
+
+        this.updateGameInfo();
+        this.updateLevelBadge(question.level);
+        this.elements.questionText.textContent = question.question;
+        this.elements.nextButton.style.display = 'none';
+        this.elements.encouragement.style.display = 'none';
+        this.displayOptions(question.options, question.correctAnswer);
+        this.startTimer();
+        this.updateProgressBar();
+    },
+
+    updateLevelBadge(level) {
+        const badge = this.elements.levelBadge;
+        badge.classList.remove('easy', 'medium', 'hard', 'active');
+
+        if (level <= 2) {
+            badge.textContent = 'سهل';
+            badge.classList.add('easy');
+        } else if (level <= 3) {
+            badge.textContent = 'متوسط';
+            badge.classList.add('medium');
+        } else {
+            badge.textContent = 'صعب';
+            badge.classList.add('hard');
+        }
+
+        badge.classList.add('active');
+    },
+
+    updateProgressBar() {
+        const progress = ((this.state.currentQuestionIndex + 1) / this.config.totalQuestions) * 100;
+        this.elements.progressFill.style.width = progress + '%';
+    },
+
+    displayOptions(options, correctAnswer) {
+        this.elements.optionsContainer.innerHTML = '';
+
+        options.forEach((option, index) => {
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option';
+            optionDiv.textContent = option;
+            optionDiv.dataset.index = index;
+
+            optionDiv.addEventListener('click', () => {
+                if (this.state.isGameActive) {
+                    this.checkAnswer(index, correctAnswer);
+                }
+            });
+
+            this.elements.optionsContainer.appendChild(optionDiv);
+        });
+    },
+
+    checkAnswer(selectedIndex, correctAnswer) {
+        if (!this.state.isGameActive) return;
+
+        this.stopTimer();
+
+        const allOptions = this.elements.optionsContainer.querySelectorAll('.option');
+        allOptions.forEach(opt => opt.classList.add('disabled'));
+
+        const isCorrect = selectedIndex === correctAnswer;
+        const selectedOption = allOptions[selectedIndex];
+
+        if (isCorrect) {
+            this.handleCorrectAnswer(selectedOption);
+        } else {
+            this.handleWrongAnswer(selectedOption, allOptions[correctAnswer]);
+        }
+    },
+
+    handleCorrectAnswer(selectedOption) {
+        console.log('✅ إجابة صحيحة!');
+
+        selectedOption.classList.add('correct');
+        this.state.score++;
+        this.state.correctAnswersStreak++;
+        this.state.currentPrize = this.config.prizeLevels[this.state.currentQuestionIndex];
+
+        this.updateGameInfo();
+        this.createConfetti();
+
+        let message = this.encouragements.correct[Math.floor(Math.random() * this.encouragements.correct.length)];
+        if (this.state.correctAnswersStreak >= 3) {
+            message = this.encouragements.streak[Math.floor(Math.random() * this.encouragements.streak.length)];
+        }
+        this.showEncouragement(message);
+
+        setTimeout(() => {
+            this.elements.nextButton.style.display = 'block';
+        }, 1000);
+    },
+
+    handleWrongAnswer(selectedOption, correctOption) {
+        console.log('❌ إجابة خاطئة!');
+
+        selectedOption.classList.add('wrong');
+        correctOption.classList.add('correct');
+        this.state.correctAnswersStreak = 0;
+
+        this.showEncouragement('❌ للأسف، الإجابة خاطئة!');
+
+        setTimeout(() => {
+            this.endGame(false);
+        }, 2000);
+    },
+
+    showEncouragement(message) {
+        this.elements.encouragement.textContent = message;
+        this.elements.encouragement.style.display = 'block';
+    },
+
+    createConfetti() {
+        for (let i = 0; i < 30; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            document.body.appendChild(confetti);
+
+            setTimeout(() => confetti.remove(), 3000);
+        }
+    },
+
+    useFiftyFifty() {
+        if (!this.state.lifelines.fiftyFifty || !this.state.isGameActive) return;
+
+        this.state.lifelines.fiftyFifty = false;
+        this.elements.fiftyFifty.classList.add('used');
+
+        const question = this.getCurrentQuestion();
+        const allOptions = this.elements.optionsContainer.querySelectorAll('.option');
+        const wrongOptions = [];
+
+        allOptions.forEach((opt, index) => {
+            if (index !== question.correctAnswer) {
+                wrongOptions.push({ element: opt, index });
+            }
+        });
+
+        wrongOptions.sort(() => Math.random() - 0.5);
+        wrongOptions.slice(0, 2).forEach(opt => {
+            opt.element.style.opacity = '0.3';
+            opt.element.style.pointerEvents = 'none';
+        });
+
+        console.log('✂️ تم استخدام حذف إجابتين');
+    },
+
+    useSkipQuestion() {
+        if (!this.state.lifelines.skipQuestion || !this.state.isGameActive) return;
+
+        this.state.lifelines.skipQuestion = false;
+        this.elements.skipQuestion.classList.add('used');
+        this.stopTimer();
+
+        console.log('⏭️ تم تخطي السؤال');
+        this.nextQuestion();
+    },
+
+    useExtraTime() {
+        if (!this.state.lifelines.extraTime || !this.state.isGameActive) return;
+
+        this.state.lifelines.extraTime = false;
+        this.elements.extraTime.classList.add('used');
+        this.state.timeRemaining += 15;
+        this.updateTimerDisplay();
+
+        console.log('⏰ تم إضافة 15 ثانية إضافية');
+        this.showEncouragement('⏰ تم إضافة 15 ثانية!');
+    },
+
+    nextQuestion() {
+        this.state.currentQuestionIndex++;
+
+        if (this.state.currentQuestionIndex >= this.config.totalQuestions) {
+            this.endGame(true);
+        } else {
+            this.displayQuestion();
+        }
+    },
+
+    getCurrentQuestion() {
+        if (this.state.currentQuestionIndex < this.questions.length) {
+            return this.questions[this.state.currentQuestionIndex];
+        }
+        return null;
+    },
+
+    updateGameInfo() {
+        this.elements.questionNumber.textContent =
+            `${this.state.currentQuestionIndex + 1}/${this.config.totalQuestions}`;
+
+        this.elements.currentPrize.textContent =
+            `${this.state.currentPrize.toLocaleString('ar-SA')} ريال`;
+
+        this.elements.scoreDisplay.textContent = this.state.score;
+    },
+
+    endGame(isWinner) {
+        this.state.isGameActive = false;
+        this.stopTimer();
+
+        const endTime = Date.now();
+        const totalTime = Math.floor((endTime - this.state.startTime) / 1000);
+        const minutes = Math.floor(totalTime / 60);
+        const seconds = totalTime % 60;
+
+        if (isWinner) {
+            this.elements.gameOverTitle.textContent = '🎉 مبروك! لقد فزت! 🎉';
+            this.elements.finalScore.textContent =
+                `${this.config.prizeLevels[this.config.prizeLevels.length - 1].toLocaleString('ar-SA')} ريال`;
+            this.elements.gameOverMessage.textContent =
+                `أجبت على جميع الأسئلة بشكل صحيح! أنت بطل حقيقي!`;
+            this.createConfetti();
+        } else {
+            this.elements.gameOverTitle.textContent = 'انتهت اللعبة';
+            this.elements.finalScore.textContent =
+                `${this.state.currentPrize.toLocaleString('ar-SA')} ريال`;
+            this.elements.gameOverMessage.textContent =
+                `أجبت بشكل صحيح على ${this.state.score} سؤال من ${this.config.totalQuestions}`;
+        }
+
+        this.displayGameStats(totalTime, minutes, seconds);
+        this.showScreen('gameOver');
+    },
+
+    displayGameStats(totalTime, minutes, seconds) {
+        const accuracy = ((this.state.score / this.state.currentQuestionIndex) * 100).toFixed(1);
+
+        this.elements.gameStats.innerHTML = `
+
+الوقت الإجمالي:
+${minutes}:${seconds.toString().padStart(2, '0')}
+
+
+الإجابات الصحيحة:
+${this.state.score}/${this.state.currentQuestionIndex}
+
+
+نسبة الدقة:
+${accuracy}%
+
+
+الجائزة المكتسبة:
+${this.state.currentPrize.toLocaleString('ar-SA')} ريال
+
+`;
+    },
+
+    restartGame() {
+        console.log('🔄 إعادة تشغيل اللعبة...');
+        this.prepareQuestions();
+        this.startGame();
+    },
+
+    showScreen(screenName) {
+        this.elements.welcomeScreen.classList.remove('active');
+        this.elements.gameScreen.classList.remove('active');
+        this.elements.gameOverScreen.classList.remove('active');
+
+        switch (screenName) {
+            case 'welcome':
+                this.elements.welcomeScreen.classList.add('active');
+                this.elements.levelIndicator.style.display = 'none';
+                break;
+            case 'game':
+                this.elements.gameScreen.classList.add('active');
+                break;
+            case 'gameOver':
+                this.elements.gameOverScreen.classList.add('active');
+                this.elements.levelIndicator.style.display = 'none';
+                break;
+        }
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    MillionaireGame.init();
+});
