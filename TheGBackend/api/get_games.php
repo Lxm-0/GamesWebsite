@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-$conn = mysqli_connect("localhost", "root", "", "test");
+$conn = mysqli_connect("localhost", "root", "", "gameswebsit_db");
 mysqli_set_charset($conn, "utf8mb4");
 
 $query = "SELECT * FROM games WHERE status = 'approved'";
