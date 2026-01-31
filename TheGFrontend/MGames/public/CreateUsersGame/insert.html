@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ادخل لعبتك الخاصة</title>
+<link rel="stylesheet" href="insert.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <section class="upload-container">
+      <div class="upload-box">
+        <div class="header-content">
+          <i class="fas fa-gamepad main-icon"></i>
+          <h2>إضافة لعبة جديدة</h2>
+          <p>أدخل بيانات اللعبة لرفعها إلى الموقع</p>
+        </div>
+
+        <form id="gameUploadForm" enctype="multipart/form-data">
+          <div class="input-group">
+            <label><i class="fas fa-heading"></i> اسم اللعبة</label>
+            <input
+              type="text"
+              name="gameName"
+              placeholder="مثال: فلابي بيرد"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <label><i class="fas fa-align-left"></i> وصف اللعبة</label>
+            <textarea
+              rows="3"
+              name="gameDescription"
+              placeholder="اكتب تفاصيل اللعبة هنا..."
+            ></textarea>
+          </div>
+
+          <div class="upload-grid">
+            <div class="drop-zone">
+              <label for="imgUpload">
+                <i class="fas fa-image"></i>
+                <span>صورة الغلاف</span>
+                <input
+                  type="file"
+                  id="imgUpload"
+                  name="GameImage"
+                  accept="image/*"
+                  hidden
+                />
+              </label>
+            </div>
+
+            <div class="drop-zone">
+              <label for="fileUpload">
+                <i class="fas fa-file-archive"></i>
+                <span>ملف اللعبة</span>
+                <input
+                  type="file"
+                  id="fileUpload"
+                  name="Gamefile"
+                  accept=".zip"
+                  hidden
+                />
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="publish-btn">
+            <i class="fas fa-cloud-upload-alt"></i> نشر اللعبة
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <script src="js/insert.js"></script>
+
+    <div id="statusModal">
+      <div class="status-card">
+        <i id="modalIcon" class="fas fa-check-circle status-icon"></i>
+        <h1 id="modalTitle">عنوان الرسالة</h1>
+        <p id="modalContent">نص الرسالة هنا...</p>
+        <button
+          class="status-btn"
+          onclick="
+            document.getElementById('statusModal').style.display = 'none'
+          "
+        >
+          موافق
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

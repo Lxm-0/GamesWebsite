@@ -1,0 +1,2174 @@
+/* ====== المتغيرات والتنسيقات العامة ====== */
+:root {
+    /* الألوان الرئيسية */
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --accent-color: #e74c3c;
+    --warning-color: #f39c12;
+    --dark-color: #2c3e50;
+    --darker-color: #1a252f;
+    --light-color: #ecf0f1;
+    --lighter-color: #ffffff;
+    
+    /* ألوان اللاعبين */
+    --player1-color: #3498db;
+    --player2-color: #e74c3c;
+    --ai-color: #9b59b6;
+    
+    /* تأثيرات الظل */
+    --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 6px 12px rgba(0, 0, 0, 0.15);
+    --shadow-heavy: 0 10px 20px rgba(0, 0, 0, 0.2);
+    
+    /* أنماط الحدود */
+    --border-radius: 15px;
+    --border-radius-sm: 8px;
+    --border-radius-lg: 20px;
+    
+    /* تأثيرات الانتقال */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* أحجام الخطوط */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 24px;
+    --font-size-xxl: 32px;
+    --font-size-xxxl: 48px;
+}
+
+/* إعادة التعيين */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: var(--light-color);
+    min-height: 100vh;
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+/* شاشة التحميل */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.loading-dice {
+    font-size: 5rem;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    animation: diceSpin 2s infinite linear;
+}
+
+@keyframes diceSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+.loading-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.loading-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+/* خلفية الجسيمات */
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* شاشة البداية */
+.start-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 37, 47, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.start-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.start-container {
+    background: linear-gradient(145deg, rgba(44, 62, 80, 0.9), rgba(26, 37, 47, 0.9));
+    border-radius: var(--border-radius-lg);
+    padding: 30px;
+    max-width: 1200px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-heavy);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.game-logo i {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.game-logo h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tagline {
+    color: #bdc3c7;
+    font-size: 1.1rem;
+}
+
+.start-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+    .start-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* اختيار وضع اللعبة */
+.mode-selection {
+    grid-column: 1 / -1;
+}
+
+.mode-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.mode-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.mode-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+}
+
+.mode-card.active {
+    background: rgba(52, 152, 219, 0.2);
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 20px rgba(52, 152, 219, 0.2);
+}
+
+.mode-card i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.mode-card h4 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.mode-card p {
+    color: #bdc3c7;
+    font-size: 0.9rem;
+}
+
+/* إعدادات اللاعبين */
+.player-settings {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 20px;
+}
+
+.input-group {
+    margin-bottom: 25px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--light-color);
+    font-weight: 600;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon input {
+    width: 100%;
+    padding: 12px 40px 12px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-sm);
+    color: var(--light-color);
+    font-size: 1rem;
+    transition: all var(--transition-normal);
+}
+
+.input-with-icon input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+}
+
+.avatar-selection {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: 2px solid transparent;
+}
+
+.avatar:hover {
+    transform: scale(1.1);
+    background: rgba(52, 152, 219, 0.3);
+}
+
+.avatar.active {
+    background: rgba(52, 152, 219, 0.5);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+}
+
+/* إعدادات اللعبة */
+.game-settings {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 20px;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.setting-item {
+    margin-bottom: 20px;
+}
+
+.setting-item label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--light-color);
+    font-weight: 600;
+}
+
+.range-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.range-container input[type="range"] {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+}
+
+.range-container input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.range-container input[type="range"]::-webkit-slider-thumb:hover {
+    background: var(--secondary-color);
+    transform: scale(1.2);
+}
+
+.range-container span {
+    min-width: 40px;
+    text-align: center;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.setting-item select {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-sm);
+    color: var(--light-color);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.setting-item select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* قواعد اللعبة */
+.rules-selection {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.rule-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.rule-checkbox:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.rule-checkbox input {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-normal);
+}
+
+.rule-checkbox input:checked + .checkmark {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkmark:after {
+    content: '✓';
+    color: white;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.rule-checkbox input:checked + .checkmark:after {
+    opacity: 1;
+}
+
+.rule-text {
+    flex: 1;
+    font-weight: 600;
+}
+
+.rule-info {
+    color: #bdc3c7;
+    font-size: 0.85rem;
+}
+
+/* إحصائيات اللاعب */
+.player-stats {
+    grid-column: 1 / -1;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 20px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    transition: all var(--transition-normal);
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: var(--shadow-medium);
+}
+
+.stat-item i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--light-color);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #bdc3c7;
+}
+
+/* أزرار التحكم */
+.start-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.start-button, .settings-button, .tutorial-button {
+    padding: 15px 30px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 200px;
+}
+
+.start-button {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.start-button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+}
+
+.start-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-button {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--light-color);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.settings-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--primary-color);
+}
+
+.tutorial-button {
+    background: rgba(243, 156, 18, 0.2);
+    color: var(--warning-color);
+    border: 2px solid var(--warning-color);
+}
+
+.tutorial-button:hover {
+    background: rgba(243, 156, 18, 0.3);
+}
+
+/* ====== منطقة اللعبة الرئيسية ====== */
+.game-container {
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.game-container.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* شريط الرأس */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: rgba(44, 62, 80, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-medium);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-left, .header-center, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.menu-button {
+    background: none;
+    border: none;
+    color: var(--light-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: all var(--transition-normal);
+}
+
+.menu-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.game-title h2 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.game-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #bdc3c7;
+    font-size: 0.9rem;
+}
+
+.separator {
+    color: var(--primary-color);
+}
+
+.turn-display {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.turn-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: rgba(52, 152, 219, 0.2);
+    border-radius: var(--border-radius);
+    border: 2px solid var(--primary-color);
+}
+
+.turn-indicator i {
+    font-size: 1.2rem;
+}
+
+.timer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.timer i {
+    color: var(--warning-color);
+}
+
+.sound-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.sound-button, .music-button, .fullscreen-button {
+    background: none;
+    border: none;
+    color: var(--light-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: all var(--transition-normal);
+}
+
+.sound-button:hover, .music-button:hover, .fullscreen-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* لوحة اللعبة */
+.game-board {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 1024px) {
+    .game-board {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+}
+
+/* بطاقات اللاعبين */
+.player-card {
+    background: rgba(44, 62, 80, 0.8);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-normal);
+    border: 2px solid transparent;
+    box-shadow: var(--shadow-medium);
+}
+
+.player-card.active {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 30px rgba(52, 152, 219, 0.3);
+    transform: translateY(-5px);
+}
+
+.player-card-header {
+    padding: 20px;
+    background: linear-gradient(90deg, rgba(44, 62, 80, 0.9), rgba(26, 37, 47, 0.9));
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.player-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.player-info {
+    flex: 1;
+}
+
+.player-info h3 {
+    margin-bottom: 5px;
+    font-size: 1.3rem;
+}
+
+.player-level {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    color: #bdc3c7;
+}
+
+.level-value {
+    color: var(--warning-color);
+    font-weight: bold;
+}
+
+.player-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #7f8c8d;
+}
+
+.status-indicator.active {
+    background: var(--secondary-color);
+    box-shadow: 0 0 10px var(--secondary-color);
+}
+
+.status-text {
+    font-size: 0.9rem;
+    color: #bdc3c7;
+}
+
+.player-card-body {
+    padding: 20px;
+}
+
+.score-display {
+    margin-bottom: 20px;
+}
+
+.current-score {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.score-label {
+    display: block;
+    color: #bdc3c7;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.score-value {
+    font-size: 3rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.progress-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 15px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    width: 0%;
+}
+
+.player-stats-mini {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-mini {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-sm);
+    padding: 10px;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.stat-mini i {
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.special-abilities {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ability {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-sm);
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: 2px solid transparent;
+}
+
+.ability:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+}
+
+.ability i {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: var(--warning-color);
+}
+
+.ability span {
+    font-size: 0.85rem;
+    display: block;
+}
+
+.player-card-footer {
+    padding: 20px;
+    background: rgba(26, 37, 47, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: 10px;
+}
+
+.roll-button, .ability-button {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.roll-button {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.roll-button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+}
+
+.roll-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.button-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.roll-button:active .button-effect {
+    width: 200px;
+    height: 200px;
+}
+
+.ability-button {
+    background: rgba(155, 89, 182, 0.2);
+    color: var(--ai-color);
+    border: 2px solid var(--ai-color);
+}
+
+.ability-button:hover:not(:disabled) {
+    background: rgba(155, 89, 182, 0.3);
+}
+
+.ability-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* منطقة النرد المركزية */
+.game-center {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dice-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.dice-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 30px;
+}
+
+.dice-display {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        inset 0 -8px 15px rgba(0, 0, 0, 0.2),
+        inset 0 8px 15px rgba(255, 255, 255, 0.7),
+        0 20px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.dice-display.secondary {
+    width: 100px;
+    height: 100px;
+    top: -30px;
+    right: -30px;
+    z-index: 1;
+}
+
+.dice-face {
+    font-size: 5rem;
+    color: var(--dark-color);
+    transition: transform 0.3s ease;
+}
+
+.dice-shadow {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    bottom: -10px;
+    filter: blur(10px);
+    z-index: 1;
+}
+
+.roll-result {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.result-value {
+    font-size: 4rem;
+    font-weight: bold;
+    color: var(--light-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.result-label {
+    color: #bdc3c7;
+    margin-top: 5px;
+}
+
+.special-effects {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.effect {
+    padding: 10px 20px;
+    background: rgba(243, 156, 18, 0.2);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 2px solid var(--warning-color);
+}
+
+.effect i {
+    color: var(--warning-color);
+}
+
+.combo-counter {
+    margin-top: 20px;
+    width: 200px;
+}
+
+.combo-display {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.combo-title {
+    color: #bdc3c7;
+}
+
+.combo-value {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.combo-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.combo-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), var(--warning-color));
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.control-panel {
+    background: rgba(44, 62, 80, 0.8);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.control-button {
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+    color: var(--light-color);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--primary-color);
+}
+
+.time-display {
+    display: flex;
+    gap: 30px;
+}
+
+.time-section {
+    text-align: center;
+}
+
+.time-label {
+    display: block;
+    color: #bdc3c7;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.time-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--light-color);
+}
+
+/* اللوحة السفلية */
+.game-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-bar {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(44, 62, 80, 0.8);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.info-item i {
+    color: var(--primary-color);
+}
+
+.notification-bar {
+    background: rgba(52, 152, 219, 0.2);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-content i {
+    color: var(--primary-color);
+}
+
+/* اللوحة الجانبية */
+.side-panel {
+    position: fixed;
+    top: 0;
+    left: -400px;
+    width: 400px;
+    height: 100vh;
+    background: linear-gradient(145deg, rgba(44, 62, 80, 0.95), rgba(26, 37, 47, 0.95));
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    box-shadow: 5px 0 20px rgba(0, 0, 0, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+}
+
+.side-panel.open {
+    left: 0;
+}
+
+.panel-header {
+    padding: 20px;
+    background: rgba(26, 37, 47, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-panel {
+    background: none;
+    border: none;
+    color: var(--light-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all var(--transition-normal);
+}
+
+.close-panel:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.panel-content {
+    padding: 20px;
+}
+
+.panel-section {
+    margin-bottom: 30px;
+}
+
+.panel-section h4 {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.history-container {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.history-list {
+    list-style: none;
+}
+
+.history-item {
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-sm);
+    border-left: 3px solid var(--primary-color);
+    transition: all var(--transition-normal);
+}
+
+.history-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-5px);
+}
+
+.advanced-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.stat-advanced {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 15px;
+}
+
+.stat-title {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--light-color);
+}
+
+.roll-distribution {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.distribution-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bar-label {
+    width: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.bar-fill {
+    flex: 1;
+    height: 20px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    min-width: 0%;
+}
+
+.bar-value {
+    width: 30px;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.win-probability {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.probability-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.player-name {
+    width: 80px;
+    font-size: 0.9rem;
+}
+
+.probability-bar {
+    flex: 1;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.probability-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--player1-color), var(--player2-color));
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+
+.probability-value {
+    width: 50px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.achievement {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-sm);
+    opacity: 0.5;
+}
+
+.achievement.unlocked {
+    opacity: 1;
+    background: rgba(52, 152, 219, 0.1);
+    border-left: 3px solid var(--primary-color);
+}
+
+.achievement i {
+    font-size: 1.5rem;
+    color: var(--warning-color);
+}
+
+.achievement-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.achievement-title {
+    font-weight: 600;
+}
+
+.achievement-desc {
+    font-size: 0.85rem;
+    color: #bdc3c7;
+}
+
+/* شاشة الفوز */
+.victory-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1002;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.victory-screen.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.victory-container {
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.victory-content {
+    background: linear-gradient(145deg, rgba(44, 62, 80, 0.95), rgba(26, 37, 47, 0.95));
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.victory-header {
+    padding: 30px;
+    text-align: center;
+    background: linear-gradient(90deg, rgba(52, 152, 219, 0.3), rgba(46, 204, 113, 0.3));
+}
+
+.victory-icon {
+    font-size: 4rem;
+    color: var(--warning-color);
+    margin-bottom: 20px;
+}
+
+.victory-header h2 {
+    font-size: 2.5rem;
+    background: linear-gradient(45deg, var(--warning-color), #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.victory-body {
+    padding: 30px;
+}
+
+.winner-info {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.winner-avatar {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(45deg, var(--warning-color), #ffd700);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 3rem;
+}
+
+.winner-info h3 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: var(--light-color);
+}
+
+.winner-score {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+.victory-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.victory-stat {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+}
+
+.victory-stat i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    display: block;
+    color: #bdc3c7;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--light-color);
+}
+
+.victory-badges {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 10px 20px;
+    background: rgba(52, 152, 219, 0.2);
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid var(--primary-color);
+}
+
+.badge i {
+    color: var(--primary-color);
+}
+
+.victory-footer {
+    padding: 20px;
+    background: rgba(26, 37, 47, 0.5);
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.victory-button {
+    padding: 15px 25px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 150px;
+}
+
+.victory-button {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.victory-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+}
+
+.victory-button.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--light-color);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.victory-button.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--primary-color);
+}
+
+/* القائمة المنبثقة */
+.popup-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1003;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.popup-menu.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.menu-content {
+    background: linear-gradient(145deg, rgba(44, 62, 80, 0.95), rgba(26, 37, 47, 0.95));
+    border-radius: var(--border-radius-lg);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-header {
+    padding: 20px;
+    background: rgba(26, 37, 47, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-menu {
+    background: none;
+    border: none;
+    color: var(--light-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all var(--transition-normal);
+}
+
+.close-menu:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.menu-items {
+    padding: 20px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    color: var(--light-color);
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    transition: all var(--transition-normal);
+    margin-bottom: 10px;
+}
+
+.menu-item:hover {
+    background: rgba(52, 152, 219, 0.2);
+}
+
+.menu-item i {
+    width: 20px;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.menu-footer {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.exit-button {
+    padding: 15px 30px;
+    background: rgba(231, 76, 60, 0.2);
+    border: 2px solid var(--accent-color);
+    border-radius: var(--border-radius);
+    color: var(--accent-color);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.exit-button:hover {
+    background: rgba(231, 76, 60, 0.3);
+}
+
+/* نافذة التعليمات */
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1004;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.tutorial-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.tutorial-container {
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.tutorial-content {
+    background: linear-gradient(145deg, rgba(44, 62, 80, 0.95), rgba(26, 37, 47, 0.95));
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.tutorial-header {
+    padding: 30px;
+    text-align: center;
+    background: linear-gradient(90deg, rgba(243, 156, 18, 0.3), rgba(231, 76, 60, 0.3));
+}
+
+.tutorial-header h2 {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tutorial-progress {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.progress-step {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.progress-step.active {
+    background: var(--warning-color);
+    transform: scale(1.2);
+}
+
+.tutorial-body {
+    padding: 30px;
+    min-height: 300px;
+}
+
+.tutorial-step {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.tutorial-step.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tutorial-step h3 {
+    margin-bottom: 20px;
+    color: var(--warning-color);
+}
+
+.tutorial-step p {
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #bdc3c7;
+}
+
+.tutorial-step ul {
+    list-style-position: inside;
+    margin-bottom: 20px;
+    color: #bdc3c7;
+}
+
+.tutorial-step li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.tutorial-image {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.tutorial-icon {
+    font-size: 4rem;
+    color: var(--primary-color);
+}
+
+.abilities-tutorial {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.ability-tutorial {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    min-width: 120px;
+}
+
+.ability-tutorial i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.tutorial-footer {
+    padding: 20px;
+    background: rgba(26, 37, 47, 0.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.tutorial-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 120px;
+}
+
+.tutorial-button {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.tutorial-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+}
+
+.tutorial-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tutorial-button.skip {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--light-color);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tutorial-button.skip:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* رسائل التنبيه */
+.alert-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 1005;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    background: rgba(44, 62, 80, 0.95);
+    border-left: 4px solid var(--primary-color);
+    box-shadow: var(--shadow-medium);
+    animation: slideInRight 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.alert i {
+    font-size: 1.2rem;
+}
+
+.alert.success {
+    border-left-color: var(--secondary-color);
+}
+
+.alert.success i {
+    color: var(--secondary-color);
+}
+
+.alert.warning {
+    border-left-color: var(--warning-color);
+}
+
+.alert.warning i {
+    color: var(--warning-color);
+}
+
+.alert.error {
+    border-left-color: var(--accent-color);
+}
+
+.alert.error i {
+    color: var(--accent-color);
+}
+
+/* ====== التجاوب مع الشاشات المختلفة ====== */
+@media (max-width: 768px) {
+    .game-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .header-left, .header-center, .header-right {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .game-title {
+        text-align: center;
+    }
+    
+    .player-card-footer {
+        flex-direction: column;
+    }
+    
+    .control-panel {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .time-display {
+        justify-content: center;
+    }
+    
+    .victory-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .tutorial-footer {
+        flex-direction: column;
+    }
+    
+    .tutorial-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --border-radius: 10px;
+        --border-radius-lg: 15px;
+    }
+    
+    .start-container, .game-container {
+        padding: 15px;
+    }
+    
+    .mode-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .player-stats-mini {
+        grid-template-columns: 1fr;
+    }
+    
+    .special-abilities {
+        flex-direction: column;
+    }
+    
+    .dice-container {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .dice-display {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .dice-face {
+        font-size: 4rem;
+    }
+}
+
+/* ====== تأثيرات خاصة ====== */
+.firework {
+    position: fixed;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.score-popup {
+    position: absolute;
+    font-size: 2rem;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 100;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: popupAnimation 1s ease-out forwards;
+}
+
+@keyframes popupAnimation {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px) scale(1.5);
+    }
+}
+
+/* ====== مؤثرات CSS3 ====== */
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+.spin {
+    animation: spin 1s linear;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.bounce {
+    animation: bounce 0.5s;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* ====== تخصيص شريط التمرير ====== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+}
+
+/* ====== حالة التركيز ====== */
+:focus {
+    outline: none;
+}
+
+:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}

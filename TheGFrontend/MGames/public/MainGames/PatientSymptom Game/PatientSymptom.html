@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاكي الطوارئ الطبية المتقدم v2.1</title>
+    <!-- Font Awesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- خلفية متحركة -->
+        <div class="animated-bg">
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+        </div>
+
+        <header class="main-header">
+            <div class="logo-area">
+                <div class="pulse-icon"><i class="fas fa-heart-pulse"></i></div>
+                <div class="title-text">
+                    <h1>محاكي الطوارئ <span>Emergency Simulator</span></h1>
+                    <p>نظام التدريب الطبي المتقدم للقرارات الحرجة</p>
+                </div>
+            </div>
+            <div class="global-stats">
+                <div class="stat-pill timer-pill" id="timer-container">
+                    <i class="fas fa-clock"></i>
+                    <span id="timer">20:00</span>
+                </div>
+                <div class="stat-pill score-pill">
+                    <i class="fas fa-star"></i>
+                    <span id="score">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="game-layout">
+            <!-- لوحة المريض -->
+            <section class="patient-card glass-panel">
+                <div class="panel-header">
+                    <div class="patient-identity">
+                        <div class="avatar-wrapper">
+                            <img id="patient-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Patient">
+                            <div class="status-dot online"></div>
+                        </div>
+                        <div class="identity-text">
+                            <h2 id="patient-name">جاري التحميل...</h2>
+                            <p><span id="patient-age">--</span> سنة | <span id="patient-gender">--</span></p>
+                        </div>
+                    </div>
+                    <div class="case-badge" id="case-difficulty">متوسط</div>
+                </div>
+
+                <div class="vitals-grid">
+                    <div class="vital-item" data-type="bp">
+                        <div class="vital-icon"><i class="fas fa-gauge-high"></i></div>
+                        <div class="vital-info">
+                            <label>ضغط الدم</label>
+                            <div class="value-group">
+                                <span class="value" id="blood-pressure">--/--</span>
+                                <span class="unit">mmHg</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vital-item pulse-anim" data-type="hr">
+                        <div class="vital-icon"><i class="fas fa-heartbeat"></i></div>
+                        <div class="vital-info">
+                            <label>النبض</label>
+                            <div class="value-group">
+                                <span class="value" id="heart-rate">--</span>
+                                <span class="unit">BPM</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vital-item" data-type="o2">
+                        <div class="vital-icon"><i class="fas fa-lungs"></i></div>
+                        <div class="vital-info">
+                            <label>الأكسجين</label>
+                            <div class="value-group">
+                                <span class="value" id="oxygen-saturation">--</span>
+                                <span class="unit">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vital-item" data-type="temp">
+                        <div class="vital-icon"><i class="fas fa-thermometer-half"></i></div>
+                        <div class="vital-info">
+                            <label>الحرارة</label>
+                            <div class="value-group">
+                                <span class="value" id="temperature">--</span>
+                                <span class="unit">°C</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clinical-presentation">
+                    <h3><i class="fas fa-notes-medical"></i> أعراض المريض / Patient symptoms </h3>
+                    <div class="symptoms-cloud" id="symptoms-list">
+                        <!-- الأعراض تظهر هنا -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- لوحة التحكم -->
+            <section class="control-center glass-panel">
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-tab="actions">الإجراءات</button>
+                    <button class="tab-btn" data-tab="history">السجل</button>
+                </div>
+
+                <div class="tab-content active" id="actions-tab">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="action-search" placeholder="ابحث عن إجراء طبي...">
+                    </div>
+                    <div class="actions-grid" id="actions-container">
+                        <!-- الأزرار تظهر هنا -->
+                    </div>
+                </div>
+
+                <div class="tab-content" id="history-tab">
+                    <div class="timeline" id="action-history">
+                        <p class="empty-msg">لا توجد إجراءات متخذة بعد</p>
+                    </div>
+                </div>
+
+                <div class="footer-actions">
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>اكتمال الخطة العلاجية</span>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn-secondary" id="reset-btn"><i class="fas fa-undo"></i> تصفية</button>
+                        <button class="btn-primary" id="submit-btn">إرسال التقرير <i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- مودال النتائج المطور -->
+    <div class="modal-overlay" id="results-modal">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h2 id="result-title" style="margin-bottom: 15px; text-align: center;">تحليل الأداء السريري</h2>
+            </div>
+            <div class="modal-body">
+                <div class="score-summary">
+                    <div class="score-circle">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" id="score-circle-fill" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <text x="18" y="20.35" class="percentage" id="score-text">0%</text>
+                        </svg>
+                    </div>
+                    <div class="diagnosis-info">
+                        <label>التشخيص النهائي:</label>
+                        <h3 id="case-diagnosis">--</h3>
+                        <div class="stars" id="star-rating"></div>
+                    </div>
+                </div>
+
+                <div class="detailed-metrics">
+                    <div class="metric">
+                        <span>السرعة</span>
+                        <div class="metric-bar"><div class="fill" id="speed-metric"></div></div>
+                    </div>
+                    <div class="metric">
+                        <span>الدقة</span>
+                        <div class="metric-bar"><div class="fill" id="accuracy-metric"></div></div>
+                    </div>
+                </div>
+
+                <div class="feedback-box">
+                    <h4><i class="fas fa-comment-dots"></i> ملاحظات الاستشاري:</h4>
+                    <p id="feedback-text">--</p>
+                </div>
+
+                <div class="actions-review">
+                    <div class="review-col">
+                        <h5><i class="fas fa-check-circle"></i> المسار الصحيح</h5>
+                        <ul id="correct-path-list"></ul>
+                    </div>
+                    <div class="review-col">
+                        <h5><i class="fas fa-times-circle"></i> أخطاء مرتكبة</h5>
+                        <ul id="mistakes-list"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="margin-top: 20px;">
+                <button class="btn-primary full-width" id="next-case-btn">الحالة التالية <i class="fas fa-arrow-left"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال النهاية -->
+    <div class="modal-overlay" id="final-modal">
+        <div class="modal-card glass-panel final-card">
+            <div class="final-content">
+                <i class="fas fa-trophy trophy-anim"></i>
+                <h1>تم إكمال المناوبة!</h1>
+                <p>لقد تعاملت مع <span id="final-cases-count">0</span> حالة طارئة بنجاح.</p>
+                <div class="final-stats-grid">
+                    <div class="f-stat">
+                        <span class="label">إجمالي النقاط</span>
+                        <span class="val" id="final-score">0</span>
+                    </div>
+                    <div class="f-stat">
+                        <span class="label">الرتبة</span>
+                        <span class="val" id="final-rank">طبيب مقيم</span>
+                    </div>
+                </div>
+                <button class="btn-primary" id="restart-btn">بدء مناوبة جديدة</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

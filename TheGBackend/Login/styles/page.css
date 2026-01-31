@@ -1,0 +1,124 @@
+@font-face {
+  src: url(Roboto-Regular.ttf);
+  font-family: Roboto;
+}
+
+:root {
+	--main-bg-color:#176b87; /*  #e91e63  #673ab7*/
+}
+
+*,
+*::after,
+*::before {
+	margin: 0;
+	padding: 0;
+	box-sizing: inherit;
+}
+
+body {
+  background: linear-gradient(to right, hsl(0, 0%, 90%),hsl(226, 100%, 90%));
+
+	height: 100vh;
+	font-size: 65.2%;
+	background: #e9ebee;
+	color: #1d2129;
+	display: flex;
+  justify-content: center;
+  align-items: center;
+	font-family: Roboto;
+}
+
+
+.box {
+
+  background: linear-gradient(to right,#153a46,#176b87);
+  width: 100%;
+	max-width: 80em; /*getting resposiveness easyly*/
+	min-width: 70.5em;
+	height: 35em;
+	border-radius: 2em;
+	transform-style: preserve-3d;
+	margin: auto;
+	padding: 4em;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	p {
+		font-size: 1.4em;
+	}
+}
+
+
+
+h1{
+	font-size: 50px;
+  text-align: center;
+}
+
+.box p{
+	font-size: 22px;
+}
+.text{
+	color:white;
+}
+
+p{
+  font-size: 15px;
+  text-align: center;
+}
+
+
+/*
+button {
+  border-radius: 0px;
+	width: 40%;
+	margin: 1em auto;
+	border: 1px solid black;
+  min-height: 50px; 
+  color: black;
+	background: rgb(34, 111, 124);
+	font-size: 1.5em;
+	font-family: Roboto, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	font-weight: bold;
+	padding: .8em 2em;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	transition: transform 80ms ease-in;
+  cursor: pointer;
+	user-select: none;
+}
+*/
+button {
+  background-color: #64ccc5; /* A bright, soft teal/mint */
+  color: #041c23; /* Dark text for high readability */
+  padding: .6em 1.5em;
+  border: none;
+  width: 40%;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 2.5em;
+	font-family: Roboto, sans-serif;
+  cursor: pointer;
+  min-height: 50px; 
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(100, 204, 197, 0.3);
+}
+
+ button:hover {
+  background-color: #dafffb; /* Lightens up on hover */
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 6px 20px rgba(100, 204, 197, 0.5);
+  cursor: pointer;
+}
+
+button:active {
+	transform: scale(.95);
+}
+
+button:focus {
+	outline: 1px solid var(--main-bg-color);
+	outline:none;
+}

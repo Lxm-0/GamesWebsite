@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MGames - Games List</title>
+    <link rel="stylesheet" href="../src/style.css" />
+    <style>
+      body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+      }
+
+      .games-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 10px;
+        overflow: hidden;
+      }
+
+      .game-card {
+        background: rgba(255, 255, 255, 0.544);
+        border-top: 1px solid rgba(240, 248, 255, 0.4);
+        border-left: 1px solid rgba(240, 248, 255, 0.3);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        text-align: center;
+      }
+
+      .game-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .game-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        background: #f0f0f0;
+      }
+
+      .game-card h3 {
+        margin: 15px 0 10px;
+        color: #333;
+      }
+
+      .game-card p {
+        color: #d6d3d3;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+      }
+
+      /* هذا التنسيق سيطبق على الأزرار القديمة والجديدة فوراً */
+      .game-card button {
+        background: linear-gradient(
+          135deg,
+          #156a84 0%,
+          #13899b 100%
+        ) !important;
+        color: aliceblue !important;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        display: inline-block;
+        width: auto; /* لضمان عدم تمدده بشكل غريب */
+        min-width: 120px;
+      }
+
+      .game-card button:hover {
+        opacity: 0.9;
+        transform: scale(1.05);
+        background: linear-gradient(
+          135deg,
+          #2588a6 0%,
+          #34a9ba 100%
+        ) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="games-container">
+      <div class="game-card">
+        <img src="../public/MainImages/Sonicpic.png" alt="Platform Game" />
+        <h3>سونيك</h3>
+        <p>
+          لعبة سونيك ممتعة تتطلب مهارة وتركيز. تحكم بالشخصية وتجاوز العقبات كلما
+          زادت السرعه.
+        </p>
+        <button id="btnPlatform">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="../public/MainImages/Master.png" alt="metro Game" />
+        <h3>زعيم ميترو</h3>
+        <p>
+          لعبة بلاتفورم تتطلب قتل الاعداء واكمال المهام . تحكم بالشخصية واقتل
+          العقبات كلما زادت الصعوبه.
+        </p>
+        <button id="btnmetrodivaniaMaster">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="../public/MainImages/Dragon.png" alt="interactive dragon" />
+        <h3>دراجون سلايدر</h3>
+        <p>لعبه لتطبيق مفهوم الاحداث في جافا سكريبت</p>
+        <button id="btnDragon">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="MainImages/pacman.png" alt="Pac Man Master" />
+        <h3>باك مان</h3>
+        <p>
+          ساعد باك مان في أكل النقاط والهروب من الأشباح في المتاهة الكلاسيكية!
+        </p>
+        <button id="btnpacman">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="MainImages/samurai.png" alt="Samurai fight" />
+        <h3>قتال ساموراي</h3>
+        <p>
+          انغمس في عالم القوة! اختبر مهاراتك في القتال السريع، واجه خصومك بسيوف
+          الكاتانا، وكن الساموراي الأخير الصامد.
+        </p>
+        <button id="btnfighting">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="MainImages/towerdefens.png" alt="Tower Defense" />
+        <h3>الدفاع عن القلعه</h3>
+        <p>
+          لعبة استراتيجية مثيرة! ابنِ أبراجك الدفاعية، خطط لمسار أعدائك، واحمِ
+          قلعتك من الهجمات المتتالية.
+        </p>
+        <button id="btntower">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="MainImages/sunnyland.png" alt="Samurai fight" />
+        <h3>ماريو</h3>
+        <p>
+          انطلق في مغامرة كلاسيكية! اقفز فوق العقبات، اجمع الكنوز، واستكشف
+          العوالم الملونة في هذه اللعبة الممتعة.
+        </p>
+        <button id="btnsouunyland">العب</button>
+      </div>
+
+      <div class="game-card">
+        <img
+          src="MainImages/fish.png"
+          style="width: 100%; height: 200px; object-fit: cover"
+          alt="fish Game"
+        />
+        <h3>لعبة الاسماك</h3>
+        <p>
+          استمتع بمغامرة تحت البحار،تحكم بالسمكه وتجنب الإصطدام بالعقبات لجمع
+          اكبر قدر من النقاط
+        </p>
+        <button id="btnfishgame">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="MainImages/piano.png" alt="pianoGame" />
+        <h3>بيانو</h3>
+        <p>
+          مغامرة موسيقيه كلاسيكيه يمكنك القفز فوق العقبات الموسيقية وجمع الكنوز
+          المخفيه في عالم الالحان
+        </p>
+        <button id="btnpiano">العب</button>
+      </div>
+
+      <div class="game-card">
+        <img src="MainImages/MemoryMatching.png" alt="MemorMatchingGame" />
+        <h3>ذاكرةالجواهر</h3>
+        <p>
+          انغمس في عالم من الجواهر المتلألئه وحاول كشف الأزواج المتطابقه قبل
+          فوات الأوان
+        </p>
+        <button id="btnMemoryMaching">العب</button>
+      </div>
+
+      <div class="game-card">
+        <img src="MainImages/spaceship.png" alt="spaceGame" />
+        <h3>قتال المجره</h3>
+        <p>
+          هل لديك الشجاعة لقيادة مركبتك وسط وابل الاعداء دفاع استراتيجي مثير
+          بثلاث فرص للبقاء على قيد الحياه وجمع النقاط بقتل عدوك
+        </p>
+        <button id="btnspacegame">العب</button>
+      </div>
+
+      <div class="game-card">
+        <img src="MainImages/breakoutship.png" alt="breakoutGame" />
+        <h3>لعبة تحطيم الطوب</h3>
+        <p>
+          دمر جميع الطوب ولكن الاهم ان تركز نظرك على مسار الكرة وتوقع اين ستسقط
+          لكي تتمكن من صدها عن السقوط ولا تخسر نقاطك استخدم الاسهم
+        </p>
+        <button id="btnbreakout">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="MainImages/Tic-Tac-Toe.png" alt="X-O-Game" />
+        <h3>لعبةX-O</h3>
+        <p>
+          صراع العقول في تسعة مربعات؛حيث تضع عدوك في فخ الكماشة وتجبره على
+          مشاهدة هزيمته قبل حدوثها
+        </p>
+        <button id="btnXO">العب</button>
+      </div>
+
+      <div class="game-card">
+        <img src="MainImages/car.png" alt="Car-Rsce-Game" />
+        <h3>سيارات سباق</h3>
+        <p>
+          زد السرعه تفادى العقبات وسيطر على الطريق منافسة شرسة وانت وحدك المتحكم
+          بالفوز والخساره
+        </p>
+        <button id="btncar">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="MainImages/Dice.jpg" alt="Dice Game" />
+        <h3>لعبة النرد</h3>
+        <p>
+          تحدى حظك في لعبة النرد المثيرة! ارمي النرد، اجمع النقاط، وكن الفائز في
+          هذه اللعبة الكلاسيكية الممتعة.
+        </p>
+        <button id="btnDic">العب</button>
+      </div>
+
+      <div class="game-card">
+        <img src="MainImages/arch.jpeg" alt="Archery-Game" />
+        <h3>السهم والقوس</h3>
+        <p>
+          هل انت قناص بالفطرة ‽تحدي الهدوء القاتل اللعبه ليست مجرد إطلاق سهام بل
+          هي معركه مع الزمن والفيزياء حيث ثبات يدك وتوقيتك هما الفارق بين
+          الالصابه الذهبيه وضياع السهم في الفراغ
+        </p>
+        <button id="btnarchery">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="MainImages/billionare.png" alt="لعبة من سيربح المليون" />
+        <h3>لعبة من سيربح المليون</h3>
+        <p>
+          اختبر معلوماتك العامة في لعبة من سيربح المليون! أجب على الأسئلة
+          المتنوعة، واستخدم وسائل المساعدة، وحقق الفوز بالجائزة الكبرى.
+        </p>
+        <button id="btnbillionare">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="MainImages/PatientSymptom.png" alt="لعبة من سيربح المليون" />
+        <h3>لعبة محاكاة عيادة الطوارئ</h3>
+        <p>
+          اختبر مهاراتك الطبية في لعبة محاكاة عيادة الطوارئ! قم بتشخيص وعلاج
+          المرضى في مواقف طارئة واقعية. هل يمكنك إنقاذ الأرواح تحت الضغط؟
+        </p>
+        <button id="btnPatientSymptom">العب</button>
+      </div>
+      <div class="game-card">
+        <img src="MainImages/المتسلق.png" alt="platformer-wallclimbing-Game" />
+        <h3>متسلق الجدران</h3>
+        <p>
+          تحدى الجدران،اربح القمه! قفزات سريعه ،وفخاخ مفاجئه! هل تستطيع الوصول
+          للقمه وتحقيق اعلى النقاط؟
+        </p>
+        <button id="btnplatformer">العب</button>
+      </div>
+
+      <div id="dynamicGamesContainer" class="games-container"></div>
+    </div>
+
+    <script type="module">
+      import { openGame } from "../src/router.js";
+
+      // --- الجزء الأول: جلب الألعاب الديناميكية ---
+      async function loadDynamicGames() {
+        try {
+          const response = await fetch(
+            "http://localhost/TheGames/TheGBackend/api/get_games.php",
+          );
+          if (!response.ok) throw new Error("Failed to fetch");
+          const games = await response.json();
+
+          const container = document.querySelector(".games-container");
+          games.forEach((game) => {
+            const card = document.createElement("div");
+            card.className = "game-card";
+            card.innerHTML = `
+        <img src="${game.game_image_path}" alt="${game.title}" />
+        <h3>${game.title}</h3>
+        <p>${game.description}</p>
+        <button class="dyn-btn">العب الآن</button>
+    `;
+
+            card.querySelector(".dyn-btn").addEventListener("click", () => {
+              // نرسل true لأن هذا مسار مباشر من قاعدة البيانات
+              openGame(game.game_file_path, true);
+            });
+
+            container.appendChild(card);
+          });
+        } catch (error) {
+          console.error("خطأ في جلب الألعاب:", error);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadDynamicGames();
+
+        // مستمعات الأحداث للأزرار القديمة (بنفس طريقتك)
+        const buttonsMap = {
+          btnPlatform: "platform",
+          btnmetrodivaniaMaster: "metrodivaniaMaster",
+          btnDragon: "interactive dragon",
+          btnpacman: "pacman",
+          btnfighting: "Fighting game",
+          btntower: "tower defense",
+          btnsouunyland: "sounnyland",
+          btnfishgame: "fishgame",
+          btnpiano: "piano",
+          btnMemoryMaching: "MemoryMatching",
+          btnspacegame: "Space-Shooter-master",
+          btnbreakout: "Breakout-Game",
+          btnXO: "Tic-Tac-Toe",
+          btncar: "Car-Race-master",
+          btnarchery: "Archery-game-master",
+          btnDic: "Dice Game",
+          btnbillionare: "billionare",
+          btnPatientSymptom: "PatientSymptom",
+          btnplatformer: "متسلق الجدران",
+        };
+
+        Object.keys(buttonsMap).forEach((id) => {
+          const btn = document.getElementById(id);
+          if (btn) {
+            btn.addEventListener("click", () => openGame(buttonsMap[id]));
+          }
+        });
+
+        // حفظ حالة الصفحة في الـ localStorage
+        try {
+          if (window.parent) {
+            window.parent.localStorage.setItem(
+              "currentPage",
+              "public/Games.html",
+            );
+            window.parent.localStorage.setItem("welcomeHidden", "true");
+          }
+        } catch (e) {
+          console.error("LocalStorage Error:", e);
+        }
+      });
+    </script>
+  </body>
+</html>

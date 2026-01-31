@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="AdminDashBoard.css" />
+    <title>Admin Dashboard</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <aside>
+        <div class="toggle">
+          <div class="logo">
+            <img src="Images/logo.png" />
+            <h2>The<span class="logotext">Games</span></h2>
+          </div>
+          <div class="close" id="close-btn">
+            <span class="material-icons-sharp"> close </span>
+          </div>
+        </div>
+
+        <div class="sidebar">
+          <a href="#" data-page="admin">
+            <span class="material-icons-sharp"> sports_esports </span>
+            <h3>Pending Games</h3>
+          </a>
+          <a href="#" data-page="insert">
+            <span class="material-icons-sharp"> add </span>
+            <h3>Add Game</h3>
+          </a>
+          <a href="#">
+            <span class="material-icons-sharp"> settings </span>
+            <h3>Settings</h3>
+          </a>
+          <a href="#">
+            <span class="material-icons-sharp"> logout </span>
+            <h3>Logout</h3>
+          </a>
+        </div>
+      </aside>
+
+      <main><iframe id="content-frame" src="about:blank"></iframe></main>
+
+      <div class="right-section">
+        <div class="nav">
+          <button id="menu-btn">
+            <span class="material-icons-sharp"> menu </span>
+          </button>
+          <div class="dark-mode">
+            <span class="material-icons-sharp active"> light_mode </span>
+            <span class="material-icons-sharp"> dark_mode </span>
+          </div>
+
+          <div class="profile">
+            <div class="info">
+              <p>Hey, <b>username</b></p>
+              <small class="text-muted">Admin</small>
+            </div>
+            <div class="profile-photo">
+              <img src="Images/User.jpg" />
+            </div>
+          </div>
+        </div>
+        <!-- End of Nav -->
+
+        <div class="user-profile">
+          <div class="logo">
+            <img src="Images/logo.png" />
+            <h2>TheGames</h2>
+            <p>A World Of Games</p>
+          </div>
+        </div>
+
+        <div class="reminders">
+          <div class="header">
+            <h2>Reminders</h2>
+            <span class="material-icons-sharp"> notifications_none </span>
+          </div>
+
+          <div class="notification">
+            <div class="icon">
+              <span class="material-icons-sharp"> volume_up </span>
+            </div>
+            <div class="content">
+              <div class="info">
+                <h3>Workshop</h3>
+                <small class="text_muted"> 08:00 AM - 12:00 PM </small>
+              </div>
+              <span class="material-icons-sharp"> more_vert </span>
+            </div>
+          </div>
+
+          <div class="notification deactive">
+            <div class="icon">
+              <span class="material-icons-sharp"> edit </span>
+            </div>
+            <div class="content">
+              <div class="info">
+                <h3>Workshop</h3>
+                <small class="text_muted"> 08:00 AM - 12:00 PM </small>
+              </div>
+              <span class="material-icons-sharp"> more_vert </span>
+            </div>
+          </div>
+
+          <div class="notification add-reminder">
+            <div>
+              <span class="material-icons-sharp"> add </span>
+              <h3>Add Reminder</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="orders.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
