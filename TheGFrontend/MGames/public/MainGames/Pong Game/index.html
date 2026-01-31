@@ -1,1 +1,572 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pong Evolution - لعبة Pong المتطورة</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Orbitron:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="PingPong.css" />
+  </head>
+  <body>
+    <div class="particles-container" id="particlesContainer"></div>
+    <div class="fps-counter" id="fpsCounter">60 FPS</div>
+    <div class="stats-overlay" id="statsOverlay">
+      الذاكرة: <span id="memoryUsage">0 MB</span><br />
+      الجسيمات: <span id="particleCount">0</span><br />
+      الإطارات: <span id="frameRate">60</span>
+    </div>
+
+    <div class="mobile-controls" id="mobileControls">
+      <div class="mobile-btn" id="upBtn">↑</div>
+      <div class="mobile-btn" id="downBtn">↓</div>
+      <div class="mobile-btn" id="pauseBtnMobile">⏸</div>
+      <div class="mobile-btn" id="powerupBtn">⚡</div>
+    </div>
+
+    <div class="game-container" id="gameContainer">
+      <!-- خلفية متحركة -->
+      <div class="background-animation"></div>
+
+      <!-- الشاشة الرئيسية -->
+      <div class="main-menu" id="mainMenu">
+        <div class="game-title">
+          <h1>
+            <span class="title-part1">PONG</span
+            ><span class="title-part2">EVOLUTION</span>
+          </h1>
+          <div class="title-line"></div>
+        </div>
+
+        <div class="player-info">
+          <div class="player-level">
+            <div class="level-label">المستوى</div>
+            <div class="level-value" id="playerLevel">1</div>
+            <div class="xp-bar">
+              <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+            </div>
+            <div class="xp-text" id="xpText">0/100 XP</div>
+          </div>
+
+          <div class="player-coins">
+            <i class="fas fa-coins"></i>
+            <span id="playerCoins">0</span>
+          </div>
+        </div>
+
+        <div class="menu-options">
+          <button class="menu-btn" id="playBtn">
+            <i class="fas fa-play"></i> بدء اللعبة
+          </button>
+          <button class="menu-btn" id="levelsBtn">
+            <i class="fas fa-layer-group"></i> اختيار المستوى
+          </button>
+          <button class="menu-btn" id="challengesBtn">
+            <i class="fas fa-trophy"></i> التحديات اليومية
+          </button>
+          <button class="menu-btn" id="storeBtn">
+            <i class="fas fa-store"></i> متجر المضارب
+          </button>
+          <button class="menu-btn" id="statsBtn">
+            <i class="fas fa-chart-line"></i> الإحصائيات
+          </button>
+          <button class="menu-btn" id="instructionsBtn">
+            <i class="fas fa-info-circle"></i> التعليمات
+          </button>
+        </div>
+
+        <div class="player-stats">
+          <div class="stat">
+            <span class="stat-label">أعلى نتيجة:</span>
+            <span class="stat-value" id="highScore">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">أعلى مستوى:</span>
+            <span class="stat-value" id="highestLevel">1</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">المباريات الملعوبة:</span>
+            <span class="stat-value" id="gamesPlayed">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">معدل الفوز:</span>
+            <span class="stat-value" id="winRate">0%</span>
+          </div>
+        </div>
+
+        <div class="game-footer">
+          <p>
+            استخدم الماوس/اللمس أو مفاتيح الأسهم/WASD | المسافة للإيقاف | R
+            لإعادة البدء
+          </p>
+          <p>1-4 للقدرات | M للتبديل بين التحكم | Esc للقائمة</p>
+        </div>
+      </div>
+
+      <!-- شاشة اختيار المستوى -->
+      <div class="levels-menu hidden" id="levelsMenu">
+        <h2><i class="fas fa-layer-group"></i> اختيار المستوى</h2>
+        <div class="levels-grid">
+          <div class="level-card" data-level="1">
+            <div class="level-icon"><i class="fas fa-star"></i></div>
+            <h3>مبتدئ</h3>
+            <p>سرعة بطيئة - خصم سهل</p>
+            <div class="level-lock" data-locked="false">
+              <i class="fas fa-lock-open"></i>
+            </div>
+          </div>
+          <div class="level-card" data-level="2">
+            <div class="level-icon">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <h3>متوسط</h3>
+            <p>سرعة متوسطة - خصم متوسط</p>
+            <div class="level-lock" data-locked="false">
+              <i class="fas fa-lock-open"></i>
+            </div>
+          </div>
+          <div class="level-card" data-level="3">
+            <div class="level-icon">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i
+              ><i class="fas fa-star"></i>
+            </div>
+            <h3>متقدم</h3>
+            <p>سرعة عالية - خصم صعب</p>
+            <div class="level-lock" data-locked="true">
+              <i class="fas fa-lock"></i>
+            </div>
+          </div>
+          <div class="level-card" data-level="4">
+            <div class="level-icon"><i class="fas fa-fire"></i></div>
+            <h3>محترف</h3>
+            <p>سرعة عالية جداً - خصم ذكي</p>
+            <div class="level-lock" data-locked="true">
+              <i class="fas fa-lock"></i>
+            </div>
+          </div>
+          <div class="level-card" data-level="5">
+            <div class="level-icon"><i class="fas fa-crown"></i></div>
+            <h3>بطل</h3>
+            <p>سرعة فائقة - خصم لا يُهزم</p>
+            <div class="level-lock" data-locked="true">
+              <i class="fas fa-lock"></i>
+            </div>
+          </div>
+        </div>
+        <button class="back-btn" id="backFromLevelsBtn">
+          <i class="fas fa-arrow-right"></i> العودة
+        </button>
+      </div>
+
+      <!-- شاشة التحديات اليومية -->
+      <div class="challenges-menu hidden" id="challengesMenu">
+        <h2><i class="fas fa-trophy"></i> التحديات اليومية</h2>
+        <div class="challenges-panel">
+          <div class="challenges-header">
+            <h3><i class="fas fa-trophy"></i> تحديات اليوم</h3>
+            <div class="challenges-count">
+              <span id="completedChallenges">0/5</span>
+              <span class="reset-time" id="resetTime">00:00:00</span>
+            </div>
+          </div>
+
+          <div class="challenges-list" id="dailyChallengesList">
+            <!-- سيتم ملؤه ديناميكياً -->
+          </div>
+
+          <div class="challenges-summary">
+            <h4>إحصائيات اليوم</h4>
+            <div class="summary-stats">
+              <div class="stat-item">
+                <div class="stat-value" id="totalCoins">0</div>
+                <div class="stat-label">العملات</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" id="totalXP">0</div>
+                <div class="stat-label">نقاط الخبرة</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" id="completionRate">0%</div>
+                <div class="stat-label">الإكمال</div>
+              </div>
+            </div>
+            <button class="claim-button" id="claimAllBtn">
+              <i class="fas fa-gift"></i> استلام جميع المكافآت
+            </button>
+          </div>
+        </div>
+        <button class="back-btn" id="backFromChallengesBtn">
+          <i class="fas fa-arrow-right"></i> العودة
+        </button>
+      </div>
+
+      <!-- شاشة متجر المضارب -->
+      <div class="store-menu hidden" id="storeMenu">
+        <h2><i class="fas fa-store"></i> متجر المضارب</h2>
+        <div class="store-panel">
+          <div class="store-header">
+            <h3>
+              <i class="fas fa-coins"></i> رصيدك:
+              <span id="storeCoins">0</span> عملة
+            </h3>
+            <div class="current-paddle">
+              المضرب الحالي: <span id="currentPaddleName">كلاسيكي</span>
+            </div>
+          </div>
+
+          <div class="store-grid" id="paddleStoreGrid">
+            <!-- سيتم ملؤه ديناميكياً -->
+          </div>
+
+          <div class="store-info">
+            <p>
+              <i class="fas fa-info-circle"></i> يمكنك شراء مضارب جديدة باستخدام
+              العملات التي تربحها من اللعب والتحديات
+            </p>
+          </div>
+        </div>
+        <button class="back-btn" id="backFromStoreBtn">
+          <i class="fas fa-arrow-right"></i> العودة
+        </button>
+      </div>
+
+      <!-- شاشة الإحصائيات -->
+      <div class="stats-menu hidden" id="statsMenu">
+        <h2><i class="fas fa-chart-line"></i> الإحصائيات</h2>
+        <div class="stats-panel">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h4>المباريات الملعوبة</h4>
+              <div class="value" id="statGamesPlayed">0</div>
+              <div class="subtext">إجمالي المباريات</div>
+            </div>
+            <div class="stat-card">
+              <h4>معدل الفوز</h4>
+              <div class="value" id="statWinRate">0%</div>
+              <div class="subtext">نسبة الفوز</div>
+            </div>
+            <div class="stat-card">
+              <h4>أعلى نتيجة</h4>
+              <div class="value" id="statHighScore">0</div>
+              <div class="subtext">أفضل أداء</div>
+            </div>
+            <div class="stat-card">
+              <h4>متوسط النقاط</h4>
+              <div class="value" id="statAvgScore">0</div>
+              <div class="subtext">متوسط النقاط/مباراة</div>
+            </div>
+            <div class="stat-card">
+              <h4>أعلى كومبو</h4>
+              <div class="value" id="statBestCombo">0</div>
+              <div class="subtext">أعلى ضربات متتالية</div>
+            </div>
+            <div class="stat-card">
+              <h4>إجمالي الوقت</h4>
+              <div class="value" id="statTotalTime">0</div>
+              <div class="subtext">دقيقة</div>
+            </div>
+          </div>
+
+          <div class="heatmap" id="heatmap">
+            <!-- خريطة حرارية للملعب -->
+          </div>
+
+          <div class="stats-details">
+            <h4><i class="fas fa-list"></i> تفاصيل الأداء</h4>
+            <div class="details-grid">
+              <div class="detail-item">
+                <span>القدرات المستخدمة:</span>
+                <span id="statPowerupsUsed">0</span>
+              </div>
+              <div class="detail-item">
+                <span>دقة الضربات:</span>
+                <span id="statAccuracy">0%</span>
+              </div>
+              <div class="detail-item">
+                <span>متوسط وقت الاستجابة:</span>
+                <span id="statReactionTime">0ms</span>
+              </div>
+              <div class="detail-item">
+                <span>نقاط الخبرة:</span>
+                <span id="statTotalXP">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="back-btn" id="backFromStatsBtn">
+          <i class="fas fa-arrow-right"></i> العودة
+        </button>
+      </div>
+
+      <!-- شاشة التعليمات -->
+      <div class="instructions-menu hidden" id="instructionsMenu">
+        <h2><i class="fas fa-info-circle"></i> كيفية اللعب</h2>
+        <div class="instructions-content">
+          <div class="instruction">
+            <div class="instruction-icon">
+              <i class="fas fa-mouse-pointer"></i>
+            </div>
+            <h3>التحكم</h3>
+            <p>حرك الماوس أو استخدم مفاتيح الأسهم/WASD للتحكم في المضرب</p>
+          </div>
+          <div class="instruction">
+            <div class="instruction-icon"><i class="fas fa-bullseye"></i></div>
+            <h3>الهدف</h3>
+            <p>
+              ارتد الكرة لتجاوز خصمك وتسجيل النقاط (أول من يصل 20 نقطة يفوز)
+            </p>
+          </div>
+          <div class="instruction">
+            <div class="instruction-icon">
+              <i class="fas fa-tachometer-alt"></i>
+            </div>
+            <h3>المستويات</h3>
+            <p>5 مستويات متدرجة الصعوبة - كل مستوى أسرع وأصعب</p>
+          </div>
+          <div class="instruction">
+            <div class="instruction-icon"><i class="fas fa-power-off"></i></div>
+            <h3>القدرات</h3>
+            <p>استخدم 1-4 لتفعيل القدرات أو اضغط على الأيقونات</p>
+          </div>
+          <div class="instruction">
+            <div class="instruction-icon"><i class="fas fa-keyboard"></i></div>
+            <h3>اختصارات</h3>
+            <p>
+              المسافة: إيقاف/متابعة | R: إعادة | Esc: القائمة | M: تبديل التحكم
+            </p>
+          </div>
+          <div class="instruction">
+            <div class="instruction-icon"><i class="fas fa-trophy"></i></div>
+            <h3>التحديات</h3>
+            <p>أكمل التحديات اليومية لربح عملات وخبرة</p>
+          </div>
+          <div class="instruction">
+            <div class="instruction-icon"><i class="fas fa-coins"></i></div>
+            <h3>المتجر</h3>
+            <p>استخدم العملات لشراء مضارب جديدة بمزايا خاصة</p>
+          </div>
+          <div class="instruction">
+            <div class="instruction-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>الإحصائيات</h3>
+            <p>تابع أداءك وتطور مهاراتك عبر شاشة الإحصائيات</p>
+          </div>
+        </div>
+        <button class="back-btn" id="backFromInstructionsBtn">
+          <i class="fas fa-arrow-right"></i> العودة
+        </button>
+      </div>
+
+      <!-- منطقة اللعبة -->
+      <div class="game-screen hidden" id="gameScreen">
+        <!-- معلومات اللعبة -->
+        <div class="game-header">
+          <div class="score-display">
+            <div class="score-player">
+              <div class="player-label">اللاعب</div>
+              <div class="score-value" id="playerScore">0</div>
+              <div class="player-combo" id="playerCombo"></div>
+            </div>
+            <div class="score-vs">VS</div>
+            <div class="score-computer">
+              <div class="player-label">الخصم</div>
+              <div class="score-value" id="computerScore">0</div>
+              <div class="computer-personality" id="computerPersonality">
+                دفاعي
+              </div>
+            </div>
+          </div>
+
+          <div class="level-display">
+            <div class="level-label">المستوى</div>
+            <div class="level-value" id="currentLevel">1</div>
+            <div class="speed-multiplier" id="speedMultiplier">×1.00</div>
+          </div>
+
+          <div class="game-controls">
+            <button class="control-btn" id="pauseBtn">
+              <i class="fas fa-pause"></i>
+            </button>
+            <button class="control-btn" id="restartBtn">
+              <i class="fas fa-redo"></i>
+            </button>
+            <button class="control-btn" id="menuBtn">
+              <i class="fas fa-home"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- لوحة القدرات -->
+        <div class="powerups-panel">
+          <div class="powerup" id="powerupSlow">
+            <div class="powerup-icon">
+              <i class="fas fa-tachometer-alt"></i>
+            </div>
+            <div class="powerup-name">إبطاء الزمن</div>
+            <div class="powerup-timer hidden">0</div>
+            <div class="powerup-key">1</div>
+          </div>
+          <div class="powerup" id="powerupBig">
+            <div class="powerup-icon"><i class="fas fa-expand-alt"></i></div>
+            <div class="powerup-name">مضرب كبير</div>
+            <div class="powerup-timer hidden">0</div>
+            <div class="powerup-key">2</div>
+          </div>
+          <div class="powerup" id="powerupFast">
+            <div class="powerup-icon"><i class="fas fa-bolt"></i></div>
+            <div class="powerup-name">سرعة عالية</div>
+            <div class="powerup-timer hidden">0</div>
+            <div class="powerup-key">3</div>
+          </div>
+          <div class="powerup" id="powerupMultiBall">
+            <div class="powerup-icon"><i class="fas fa-baseball-ball"></i></div>
+            <div class="powerup-name">كرات متعددة</div>
+            <div class="powerup-timer hidden">0</div>
+            <div class="powerup-key">4</div>
+          </div>
+        </div>
+
+        <!-- Canvas للعبة -->
+        <div class="canvas-container">
+          <canvas id="pongCanvas"></canvas>
+
+          <!-- شاشة الإيقاف المؤقت -->
+          <div class="pause-overlay hidden" id="pauseOverlay">
+            <h2><i class="fas fa-pause"></i> توقفت اللعبة</h2>
+            <button class="resume-btn" id="resumeBtn">
+              <i class="fas fa-play"></i> استئناف
+            </button>
+            <div class="pause-tips">
+              <p>
+                <i class="fas fa-lightbulb"></i> تلميحات: استخدم مفاتيح 1، 2، 3،
+                4 لتفعيل القدرات
+              </p>
+              <p>
+                <i class="fas fa-coins"></i> العملات الحالية:
+                <span id="pauseCoins">0</span>
+              </p>
+              <p>
+                <i class="fas fa-chart-line"></i> الكومبو الحالي:
+                <span id="pauseCombo">0x</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- شاشة النهاية -->
+          <div class="game-over-overlay hidden" id="gameOverOverlay">
+            <h2 id="gameOverTitle">انتهت اللعبة</h2>
+            <div class="game-result" id="gameResult"></div>
+            <div class="final-stats">
+              <div class="final-stat">
+                <span>المستوى الذي وصلت إليه:</span>
+                <span id="finalLevel">1</span>
+              </div>
+              <div class="final-stat">
+                <span>نتيجتك النهائية:</span>
+                <span id="finalScore">0</span>
+              </div>
+              <div class="final-stat">
+                <span>الوقت المستغرق:</span>
+                <span id="finalTime">0:00</span>
+              </div>
+              <div class="final-stat">
+                <span>العملات المكتسبة:</span>
+                <span id="finalCoins">+0</span>
+              </div>
+              <div class="final-stat">
+                <span>نقاط الخبرة:</span>
+                <span id="finalXP">+0</span>
+              </div>
+            </div>
+            <div class="game-over-buttons">
+              <button class="action-btn" id="playAgainBtn">
+                <i class="fas fa-redo"></i> لعب مرة أخرى
+              </button>
+              <button class="action-btn" id="mainMenuBtn">
+                <i class="fas fa-home"></i> القائمة الرئيسية
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- شاشة بداية المستوى -->
+        <div class="level-start-overlay hidden" id="levelStartOverlay">
+          <div class="level-start-content">
+            <h2 id="levelStartTitle">
+              المستوى <span id="levelNumber">1</span>
+            </h2>
+            <p id="levelDescription">جهز نفسك! ستبدأ اللعبة قريباً</p>
+            <div class="countdown" id="countdown">3</div>
+            <div class="level-tips">
+              <p>
+                <i class="fas fa-tachometer-alt"></i> السرعة سترتفع تدريجياً كل
+                6 ثوانٍ
+              </p>
+              <p>
+                <i class="fas fa-robot"></i> الخصم:
+                <span id="computerStyle">دفاعي</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- مؤقت اللعبة -->
+        <div class="game-timer">
+          <i class="fas fa-clock"></i>
+          <span id="gameTime">00:00</span>
+          <div class="speed-indicator" id="speedIndicator">
+            <i class="fas fa-running"></i> ×<span>1.00</span>
+          </div>
+        </div>
+
+        <!-- تلميحات اللعبة -->
+        <div class="game-tips">
+          <p>
+            <i class="fas fa-info-circle"></i> اضغط المسافة للإيقاف | R لإعادة
+            اللعبة | Esc للقائمة | M لتبديل التحكم
+          </p>
+          <p>
+            <i class="fas fa-coins"></i> العملات:
+            <span id="gameCoins">0</span> | الخبرة: <span id="gameXP">0</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- مؤثرات صوتية -->
+    <audio id="hitSound" preload="auto">
+      <source
+        src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+    <audio id="scoreSound" preload="auto">
+      <source
+        src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+    <audio id="powerupSound" preload="auto">
+      <source
+        src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+    <audio id="levelUpSound" preload="auto">
+      <source
+        src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-wrong-answer-buzz-950.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <script src="script.js"></script>
+  </body>
+</html>
 
