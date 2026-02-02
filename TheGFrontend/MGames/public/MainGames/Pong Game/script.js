@@ -1,3 +1,29 @@
+const over_in = document.getElementById("overlay_in");
+const mod_in = document.getElementById("model_in");
+const btu_in = document.getElementById("btn_in");
+const open_in = document.getElementById("open_info");
+const informat = document.getElementById("statsOverlay");
+
+open_in.addEventListener("click", () =>{
+    over_in.style.display = "inline";
+    informat.style.display = "inline";
+
+});
+
+over_in.addEventListener("click", () =>{
+    over_in.style.display = "none";
+    informat.style.display = "none";
+});
+mod_in.addEventListener("click", (e) =>{
+e.stopPropagation();
+});
+btu_in.addEventListener("click", () =>{
+    over_in.style.display = "none";
+    informat.style.display = "none";
+});
+
+
+
 // ========== JavaScript الكامل للعبة مع التحسينات المطلوبة ==========
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Pong Evolution - جاهز للعب!');
