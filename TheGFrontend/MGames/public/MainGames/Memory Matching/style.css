@@ -135,9 +135,7 @@ body{
     height: 350px;
     width: 350px;
   }
-  .card .front-view img{
-    max-width: 16px;
-  }
+
   .card .back-view img{
     max-width: 40px;
   }
@@ -169,3 +167,7 @@ body{
     background: #6563ff;
   }
 }
+
+  .card .front-view img{
+    max-width: 80px;
+  }

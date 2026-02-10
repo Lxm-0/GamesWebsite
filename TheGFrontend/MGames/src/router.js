@@ -65,9 +65,17 @@ export function openGame(target, isDirectPath = false) {
              case"متسلق الجدران":
              path = "public/MainGames/متسلق الجدران/platformer.html";
              break; 
+
             case "Ping Pong Game":
             path = "public/MainGames/Pong Game/index.html";
             break;
+
+            case "Vikning Game":
+            path = "public/MainGames/Vikning Game/vikning_game.html";
+            break;
+
+
+
             default:
                 path = "public/Games.html";
         }
