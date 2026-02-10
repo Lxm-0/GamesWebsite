@@ -92,7 +92,7 @@ const startButton = document.querySelector('.button-main');
 if (startButton) {
     startButton.addEventListener('click', () => {
         console.log("Start button clicked");
-        loadPage("public/Games.html");
+        loadPage("src/Games.html");
     });
 }
 
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const welcomeHidden = localStorage.getItem("welcomeHidden");
 
         console.log("Saved state:", { savedPage, welcomeHidden });
-     
+
         if (!isInIframe && savedPage && welcomeHidden === "true") {
             loadPage(savedPage);
         } else {

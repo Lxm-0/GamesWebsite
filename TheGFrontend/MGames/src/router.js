@@ -1,87 +1,116 @@
-// router.js - Updated to handle Direct URLs
+// router.js - Handles paths for both Local(Apache) and Production(Vite Build)
 export function openGame(target, isDirectPath = false) {
     console.log("openGame called with:", target, "isDirectPath:", isDirectPath);
+
+    // Detect Environment
+    // In Local Apache: window.IS_PRODUCTION is undefined.
+    // In Prod Build: Vite replaces it with true.
+    const isProd = (typeof window.IS_PRODUCTION !== 'undefined' && window.IS_PRODUCTION === true);
+
+    // Path Prefixes relative to index.html (the parent frame)
+    // Local: Legacy games are in 'public/', Module games in 'src/'
+    // Prod: All games are flattened to root or 'assets/' depending on build, 
+    // BUT 'public' folder contents are strictly copied to root.
+    // Platform game (from src) might be in 'assets' or root depending on config.
+    // Let's assume standard Vite behavior: public -> root.
+
+    // Legacy Games (from public)
+    // Local: "public/MainGames/..."
+    // Prod: "MainGames/..."
+    const legacyPrefix = isProd ? "" : "public/";
+
+    // Module Games (from src)
+    // Local: "src/MainGames/..."
+    // Prod: Look depends on build. If output is "src/MainGames/...", prefix is "src/".
+    // If output is flattened, prefix is "". 
+    // Based on previous build check, 'platformGame.html' ended up deep.
+    // Let's stick to "src/" for local. For Prod, we need to match the output.
+    // The previous build output indicated: dist/src/MainGames/...
+    // So Prod prefix is ALSO "src/" unless we flattened it.
+    // Wait, Vite copies 'public' to root. 'src' files are built to 'dist/src' usually unless flattened.
+    // Let's try matching the folder structure.
+    const srcPrefix = "src/";
+
     let path;
     if (isDirectPath) {
-        // If it's a dynamic game, use the URL directly from the database
         path = target;
     } else {
-        // Original Switch Logic for hardcoded games
         switch (target) {
+            // Module Games (Inside src)
             case "platform":
-                path = "public/MainGames/platformgame/platformGame.html";
+                path = srcPrefix + "MainGames/platformgame/platformGame.html";
                 break;
+            case "متسلق الجدران": // Assuming this was moved to src? No, moved to public. check list.
+                // Actually I moved almost everything to public except platform.
+                // Let's treat it as legacy if it's in public.
+                path = legacyPrefix + "MainGames/متسلق الجدران/platformer.html";
+                break;
+
+            // Legacy Games (Inside public)
             case "metrodivaniaMaster":
-                path = "public/MainGames/metrodivaniaMaster/metrodivaniaMaster.html";
+                path = legacyPrefix + "MainGames/metrodivaniaMaster/metrodivaniaMaster.html";
                 break;
             case "interactive dragon":
-                path = "public/MainGames/DragonSlider/interactive dragon.html";
+                path = legacyPrefix + "MainGames/DragonSlider/interactive dragon.html";
                 break;
             case "pacman":
-                path = "public/MainGames/pacmanmaster/pacman.html";
+                path = legacyPrefix + "MainGames/pacmanmaster/pacman.html";
                 break;
             case "Fighting game":
-                path = "public/MainGames/fightinggame/fightingGame.html";
+                path = legacyPrefix + "MainGames/fightinggame/fightingGame.html";
                 break;
             case "tower defense":
-                path = "public/MainGames/towerdefensemain/towerdefense.html";
+                path = legacyPrefix + "MainGames/towerdefensemain/towerdefense.html";
                 break;
             case "sounnyland":
-                path = "public/MainGames/sunnylandplatformermain/sounnyland.html";
+                path = legacyPrefix + "MainGames/sunnylandplatformermain/sounnyland.html";
                 break;
             case "fishgame":
-                path = "public/MainGames/play/fishgame.html";
+                path = legacyPrefix + "MainGames/play/fishgame.html";
                 break;
             case "piano":
-                path = "public/MainGames/Piano/pianoo.html";
+                path = legacyPrefix + "MainGames/Piano/pianoo.html";
                 break;
             case "MemoryMatching":
-                path = "public/MainGames/Memory Matching/Matching.html";
+                path = legacyPrefix + "MainGames/Memory Matching/Matching.html";
                 break;
             case "Space-Shooter-master":
-                path = "public/MainGames/Space-Shooter-master/space_shooter.html";
+                path = legacyPrefix + "MainGames/Space-Shooter-master/space_shooter.html";
                 break;
             case "Breakout-Game":
-                path = "public/MainGames/Breakout-Game/Breakout.html";
+                path = legacyPrefix + "MainGames/Breakout-Game/Breakout.html";
                 break;
             case "Tic-Tac-Toe":
-                path = "public/MainGames/Tic-Tac-Toe/x-o-game.html";
+                path = legacyPrefix + "MainGames/Tic-Tac-Toe/x-o-game.html";
                 break;
             case "Car-Race-master":
-                path = "public/MainGames/Car-Race-master/Main_menu.html";
+                path = legacyPrefix + "MainGames/Car-Race-master/Main_menu.html";
                 break;
             case "Dice Game":
-                path = "public/MainGames/Dice Game/Dice-Game.html";
+                path = legacyPrefix + "MainGames/Dice Game/Dice-Game.html";
                 break;
             case "Archery-game-master":
-                path = "public/MainGames/Archery-game-master/Archery-game.html";
+                path = legacyPrefix + "MainGames/Archery-game-master/Archery-game.html";
                 break;
             case "billionare":
-                path = "public/MainGames/Billionare/billionare.html";
+                path = legacyPrefix + "MainGames/Billionare/billionare.html";
                 break;
             case "PatientSymptom":
-                path = "public/MainGames/PatientSymptom Game/PatientSymptom.html";
-                break;  
-             case"متسلق الجدران":
-             path = "public/MainGames/متسلق الجدران/platformer.html";
-             break; 
-
+                path = legacyPrefix + "MainGames/PatientSymptom Game/PatientSymptom.html";
+                break;
             case "Ping Pong Game":
-            path = "public/MainGames/Pong Game/index.html";
-            break;
-
+                path = legacyPrefix + "MainGames/Pong Game/index.html";
+                break;
             case "Vikning Game":
-            path = "public/MainGames/Vikning Game/vikning_game.html";
-            break;
-
-
-
+                path = legacyPrefix + "MainGames/Vikning Game/vikning_game.html";
+                break;
             default:
-                path = "public/Games.html";
+                // Default fallback
+                path = srcPrefix + "Games.html";
         }
     }
 
-    console.log("Final Path determined:", path);
+    console.log("Final Path determined:", path, "IsProd:", isProd);
 
     // Navigation logic
     if (window.self !== window.top && window.parent?.loadPage) {
@@ -95,4 +124,4 @@ export function openGame(target, isDirectPath = false) {
             window.location.href = path;
         }
     }
-    }
+}

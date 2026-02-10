@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build Output
+dist/
+build/
+out/
+
+# Environment Variables
+.env
+.env.local
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# System
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Large Game Assets (Optional - Uncomment if needed)
+# *.mp4
+# *.mov
+# *.zip
+# *.rar
