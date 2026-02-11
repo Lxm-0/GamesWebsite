@@ -40,10 +40,8 @@ export function openGame(target, isDirectPath = false) {
             case "platform":
                 path = srcPrefix + "MainGames/platformgame/platformGame.html";
                 break;
-            case "متسلق الجدران": // Assuming this was moved to src? No, moved to public. check list.
-                // Actually I moved almost everything to public except platform.
-                // Let's treat it as legacy if it's in public.
-                path = legacyPrefix + "MainGames/متسلق الجدران/platformer.html";
+            case "WallClimber":
+                path = legacyPrefix + "MainGames/WallClimber/platformer.html";
                 break;
 
             // Legacy Games (Inside public)
@@ -57,7 +55,7 @@ export function openGame(target, isDirectPath = false) {
                 path = legacyPrefix + "MainGames/pacmanmaster/pacman.html";
                 break;
             case "Fighting game":
-                path = legacyPrefix + "MainGames/fightinggame/fightingGame.html";
+                path = legacyPrefix + "MainGames/fightingGame.html";
                 break;
             case "tower defense":
                 path = legacyPrefix + "MainGames/towerdefensemain/towerdefense.html";
@@ -106,7 +104,8 @@ export function openGame(target, isDirectPath = false) {
                 break;
             default:
                 // Default fallback
-                path = srcPrefix + "Games.html";
+                // Default fallback
+                path = "src/Games.html";
         }
     }
 

@@ -294,9 +294,13 @@
     // --- الجزء الأول: جلب الألعاب الديناميكية ---
     async function loadDynamicGames() {
       try {
-        const response = await fetch(
-          "http://localhost/TheGames/TheGBackend/api/get_games.php",
-        );
+        // Use relative path for production/apache, or proxy for vite
+        const isVite = window.location.port === "5173";
+        const apiUrl = isVite
+          ? "/TheGBackend/api/get_games.php"
+          : "../../../TheGBackend/api/get_games.php";
+
+        const response = await fetch(apiUrl);
         if (!response.ok) throw new Error("Failed to fetch");
         const games = await response.json();
 
@@ -346,7 +350,7 @@
         btnDic: "Dice Game",
         btnbillionare: "billionare",
         btnPatientSymptom: "PatientSymptom",
-        btnplatformer: "متسلق الجدران",
+        btnplatformer: "WallClimber",
         btnPong: "Ping Pong Game",
         btnViking: "Vikning Game"
       };

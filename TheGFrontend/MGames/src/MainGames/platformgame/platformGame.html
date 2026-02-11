@@ -1,24 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <style>
-      .GamesReturn {
-        padding: 10px 10px;
-        border: none;
-        border-radius: 20px;
-        background-color: #176b87;
-        font-size: 1rem;
-        cursor: pointer;
-        color: rgb(255, 255, 255);
-        transition: 0.3s;
-        text-align: center;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <style>
+    .GamesReturn {
+      padding: 10px 10px;
+      border: none;
+      border-radius: 20px;
+      background-color: #176b87;
+      font-size: 1rem;
+      cursor: pointer;
+      color: rgb(255, 255, 255);
+      transition: 0.3s;
+      text-align: center;
+    }
+  </style>
+  <script type="importmap">
+      {
+        "imports": {
+          "kaplay": "https://unpkg.com/kaplay@3001.0.19/dist/kaplay.mjs"
+        }
       }
-    </style>
-  </head>
-  <body>
-    <script type="module" src="utilis.js"></script>
-  </body>
+    </script>
+</head>
+
+<body>
+  <script>
+    window.addEventListener("error", (e) => {
+      if (e.message.includes("kaplay") || e.filename.includes("kaplay")) {
+        alert("فشل تحميل محرك اللعبة (Kaplay). يرجى التحقق من اتصال الإنترنت أو إعدادات الحماية في المتصفح. \nGame Engine (Kaplay) failed to load.");
+      }
+    });
+  </script>
+  <script type="module" src="utilis.js"></script>
+</body>
+
 </html>

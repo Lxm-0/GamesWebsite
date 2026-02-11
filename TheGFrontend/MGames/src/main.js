@@ -3,6 +3,9 @@
 const hamburgerBtn = document.getElementById('hamburgerBtn');
 const menuItems = document.getElementById('menuItems');
 
+// Check if running in iframe
+const isInIframe = window.self !== window.top;
+
 if (hamburgerBtn && menuItems) {
     hamburgerBtn.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -33,7 +36,7 @@ let pageLoader = document.getElementById("pageloader");
 
 window.loadPage = function (page) {
 
-    const isInIframe = window.self !== window.top;
+    // const isInIframe = window.self !== window.top; // Already defined globally
 
 
     if (divdelete) {
@@ -122,13 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log("Saved state:", { savedPage, welcomeHidden });
 
-        if (!isInIframe && savedPage && welcomeHidden === "true") {
-            loadPage(savedPage);
-        } else {
-            console.log("Showing welcome screen");
-            if (divdelete) {
-                divdelete.style.display = 'flex';
-            }
+        // Disable auto-resume to prevent 404s on changed paths
+        // if (!isInIframe && savedPage && welcomeHidden === "true") {
+        //     loadPage(savedPage);
+        // } else {
+        console.log("Showing welcome screen");
+        if (divdelete) {
+            divdelete.style.display = 'flex';
         }
+        // }
     }, 100);
 });
